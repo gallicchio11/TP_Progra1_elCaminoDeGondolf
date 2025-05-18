@@ -2,22 +2,23 @@ package juego;
 import java.awt.Color;
 import entorno.Entorno;
 
-public class Mago {
+public class Roca {
+
 	private int x;
 	private int y;
-	private int ancho;
-	private int altura;
-	private int velocidad;
+	private int ancho = 20;
+	private int altura = 20;
+	private int tipo = 1;
 	
 
 //	Constructor
-	public Mago() {
-		this.x = 500;
-		this.y = 300;
-		this.ancho = 30;
-		this.altura = 30;
-		this.velocidad = 5;
+	public Roca(int x, int y) {
+		this.x = x;
+		this.y = y;
+		ancho = 30;
+		altura = 30;
 	}
+
 //	-----------Getter y Setter--------------
 	public int getX() {
 		return x;
@@ -50,51 +51,28 @@ public class Mago {
 	public void setAltura(int altura) {
 		this.altura = altura;
 	}
-	public void setVelocidad(int velocidad) {
-		this.velocidad = velocidad;
-	}
-
-	public int getVelocidad() {
-		return velocidad;
-	}
-	//limites de clase Mago(lados: arriba,abajo,derecha,izquierda), funciones utilizadas para hitbox
+	//limites de clase Roca(lados: arriba,abajo,derecha,izquierda)
 	public int limiteSuperior() {
 		return this.y - this.altura / 2;
 	}
 	public int limiteInferior() {
 		return this.y + this.altura / 2;
 	}
-	public int limiteDecho() {
+	public int limiteDerecho() {
 		return this.x + this.ancho/ 2;
 	}
 	public int limiteIzquierdo() {
 		return this.x - this.ancho / 2;
 	}
-	
-
+	public int getTipo() {
+		return 1;
+	}
 //	----------------------------------------
 	
 //	Dibujar
 	public void dibujar(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.altura,0, Color.BLUE);
+		entorno.dibujarRectangulo(this.x, this.y,ancho, altura,0, Color.GREEN);
 	}
 	
-//	Movimientos
-	public void moverDerecha() {
-		this.x = x + velocidad;
-	}
-	
-	public void moverIzquierda() {
-		this.x = x - velocidad;
-	}
-	
-	public void moverArriba() {	
-		this.y = y - velocidad;
-	}
-	
-	public void moverAbajo() {
-		this.y = y + velocidad;	
-	}
 
-	
 }
