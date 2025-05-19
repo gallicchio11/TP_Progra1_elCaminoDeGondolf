@@ -1,6 +1,5 @@
 package juego;
 import java.awt.Color;
-
 import entorno.Entorno;
 
 public class Menu {
@@ -10,11 +9,11 @@ public class Menu {
 	private int altura;
 	
 //	Constructor
-	public Menu(){
-		this.x = 875;
-		this.y = 500;
-		this.ancho = 250;
-		this.altura = 1000;
+	public Menu(int anchoVentana, int alturaVentana){
+		this.x = anchoVentana - this.ancho /2 ;
+		this.y = alturaVentana/2;
+		this.ancho = anchoVentana - anchoVentana/2;
+		this.altura = alturaVentana;
 
 	}
 

@@ -3,23 +3,20 @@ import java.awt.Color;
 import entorno.Entorno;
 
 public class Roca {
-
 	private int x;
 	private int y;
-	private int ancho = 20;
-	private int altura = 20;
-	private int tipo = 1;
-	
+	private int ancho;
+	private int altura;
 
+	
 //	Constructor
 	public Roca(int x, int y) {
 		this.x = x;
 		this.y = y;
-		ancho = 30;
-		altura = 30;
+		this.ancho = 30;
+		this.altura = 30;
 	}
-
-//	-----------Getter y Setter--------------
+//-------------Getters y Setters-----------------
 	public int getX() {
 		return x;
 	}
@@ -51,28 +48,25 @@ public class Roca {
 	public void setAltura(int altura) {
 		this.altura = altura;
 	}
-	//limites de clase Roca(lados: arriba,abajo,derecha,izquierda)
-	public int limiteSuperior() {
-		return this.y - this.altura / 2;
-	}
-	public int limiteInferior() {
-		return this.y + this.altura / 2;
-	}
-	public int limiteDerecho() {
-		return this.x + this.ancho/ 2;
-	}
-	public int limiteIzquierdo() {
-		return this.x - this.ancho / 2;
-	}
-	public int getTipo() {
-		return 1;
-	}
-//	----------------------------------------
-	
+//	---------------------------
+
 //	Dibujar
 	public void dibujar(Entorno entorno) {
 		entorno.dibujarRectangulo(this.x, this.y,ancho, altura,0, Color.GREEN);
 	}
 	
-
+//	Bordes/limites de la Roca
+	public int limiteSuperior() {
+		return this.y - this.altura/2 ;
+	}
+	public int limiteInferior() {
+		return this.y + this.altura/2;
+	}
+	public int limiteIzquierdo() {
+		return this.x - this.ancho/2;
+	}
+	public int limiteDerecho() {
+		return this.x + this.ancho/2;
+	}
+	
 }
