@@ -1,23 +1,28 @@
 package juego;
+import java.awt.Image;
+import java.awt.Image;
 
 import entorno.Entorno;
+import entorno.Herramientas;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego
 {
 	// El objeto Entorno que controla el tiempo y otros
-	private int anchoVentana= 1000;
+	private int anchoVentana= 900;
 	private int alturaVentana= 600;
 	private Entorno entorno;
 	private Mago mago;
 	private Menu menu;
 	private Roca[] rocas = {
-			new Roca(200,200),
-			new Roca(600,200),
-			new Roca(350,100),
-			new Roca(200,400),
-			new Roca(550,500),
+			new Roca(200,200,1),
+			new Roca(600,200,2),
+			new Roca(350,100,0),
+			new Roca(200,400,2),
+			new Roca(550,500,1),
+
 	};
+	private Image imagenFondo = Herramientas.cargarImagen("mapa2.png"); 
 	private Murcielago[] murcielagos = {
 			new Murcielago(0,200)
 	};
@@ -25,12 +30,15 @@ public class Juego extends InterfaceJuego
 	
 	// Variables y métodos propios de cada grupo
 	// ...
-	
+	public void dibujarImagenMenu(Entorno entorno) {
+		entorno.dibujarImagen(imagenFondo,0, 0, 0, 1);
+	}
 	
 	
 	Juego()
 	{
 		// Inicializa el objeto entorno
+		
 		
 		this.entorno = new Entorno(this, "Proyecto para TP", anchoVentana, alturaVentana);
 		this.menu = new Menu(anchoVentana,alturaVentana); //inicializamos el menu
@@ -62,7 +70,8 @@ public class Juego extends InterfaceJuego
 	{
 		// Procesamiento de un instante de tiempo
 		// ...
-		
+		// dibujamos el mapa en la primera capa 
+		this.entorno.dibujarImagen(imagenFondo, anchoVentana / 2 + 10, alturaVentana / 2, 0, 1.7);
 //		---------------------Mago--------------------------
 		this.mago.dibujar(entorno); //dibujamos al mago
 				
@@ -101,11 +110,13 @@ public class Juego extends InterfaceJuego
 		}	
 		
 //		-------------------------Menu---------------------------
-		this.menu.dibujar(entorno); //Dibujamos el menú
+		this.menu.dibujarImagenMenu(entorno); //Dibujamos el menú
+		
 		
 //		-------------------------Rocas--------------------------
 		for (int i = 0; i < rocas.length;i++) { //Dibujamos a las Rocas
-			rocas[i].dibujar(entorno);
+			rocas[i].dibujarImagenRoca(entorno);
+			
 		}
 //		  ---------------------------Murcielago----------------------
 		for (int i = 0 ; i < murcielagos.length;i++) { //Dibujamos a los murcielagos
@@ -115,12 +126,7 @@ public class Juego extends InterfaceJuego
 			if(murcielagos[i].getX() + murcielagos[i].getAncho() / 2 < menu.getX() - menu.getAncho() / 2) {
 				this.murcielagos[i].moverDerecha();
 			}
-		}
-		
-		
-		
-		
-		
+		}	
 		
 	}
 		

@@ -1,25 +1,35 @@
 package juego;
 import java.awt.Color;
+import java.awt.Image;
+
 import entorno.Entorno;
+import entorno.Herramientas;
 
 public class Menu {
 	private int x;
 	private int y;
 	private int ancho;
 	private int altura;
-	
+    private Image imagen;
+
 //	Constructor
 	public Menu(int anchoVentana, int alturaVentana){
 		this.x = anchoVentana - this.ancho /2 ;
 		this.y = alturaVentana/2;
 		this.ancho = anchoVentana - anchoVentana/2;
 		this.altura = alturaVentana;
+        this.imagen = Herramientas.cargarImagen("menu.png");
+
 
 	}
 
 //	Dibujar
 	public void dibujar(Entorno entorno) {
 		entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.altura,0, Color.red);
+	}
+//	Dibujar imagen
+	public void dibujarImagenMenu(Entorno entorno) {
+		entorno.dibujarImagen(this.imagen,this.x-115, this.y, 0, 1);
 	}
 	
 //	Getters y Setters

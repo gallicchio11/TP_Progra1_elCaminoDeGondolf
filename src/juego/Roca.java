@@ -2,20 +2,33 @@ package juego;
 import java.awt.Color;
 import entorno.Entorno;
 
+import java.awt.Image;
+import entorno.Herramientas;
+
 public class Roca {
 	private int x;
 	private int y;
 	private int ancho;
 	private int altura;
-
+	private int rocaTipo;
+    private Image imagen;
+	private String [] imagenes= {
+			("roca1.png"),
+			("roca2.png"),
+			("roca1.png"),
+	};
 	
 //	Constructor
-	public Roca(int x, int y) {
+	public Roca(int x, int y, int tipo) {
 		this.x = x;
 		this.y = y;
-		this.ancho = 30;
-		this.altura = 30;
+		this.ancho = 50;
+		this.altura = 50;
+		this.rocaTipo  = tipo;
+        this.imagen = Herramientas.cargarImagen(imagenes[tipo]);
+
 	}
+	
 //-------------Getters y Setters-----------------
 	public int getX() {
 		return x;
@@ -48,11 +61,20 @@ public class Roca {
 	public void setAltura(int altura) {
 		this.altura = altura;
 	}
-//	---------------------------
+    public int getTipo() {
+        return rocaTipo;
+    }
 
-//	Dibujar
-	public void dibujar(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y,ancho, altura,0, Color.GREEN);
+    public String getNombreImagen() {
+            return imagenes[this.rocaTipo];
+ 
+    }
+
+
+
+//	Dibujar imagen
+	public void dibujarImagenRoca(Entorno entorno) {
+		entorno.dibujarImagen(this.imagen, this.x, this.y, 0, 3.5);
 	}
 	
 //	Bordes/limites de la Roca
