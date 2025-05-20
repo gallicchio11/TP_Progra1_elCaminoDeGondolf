@@ -1,8 +1,10 @@
 package juego;
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Menu;
 
 import entorno.Entorno;
+import entorno.Herramientas;
 
 public class Mago {
 	private int x;
@@ -10,7 +12,11 @@ public class Mago {
 	private int ancho;
 	private int altura;
 	private int velocidad;
-	
+    private Image imagen;
+	private String [] imagenes= {
+			("mago.png"),
+			("mago2.png"),
+	};
 
 //	Constructor
 	public Mago(int anchoVentana, int alturaVentana, int x) {
@@ -19,6 +25,8 @@ public class Mago {
 		this.ancho = 30;
 		this.altura = 30;
 		this.velocidad = 5;
+        this.imagen = Herramientas.cargarImagen("mago.png");
+
 	}
 	
 //	-----------Getter y Setter--------------
@@ -60,11 +68,22 @@ public class Mago {
 	public int getVelocidad() {
 		return velocidad;
 	}
+	
+	public void setImagenMago(Image imagen) {
+		this.imagen = imagen;
+	}
+	public Image getImagen() {
+		return this.imagen = imagen;
+	}
 //	----------------------------------------
 	
 //	Dibujar
 	public void dibujar(Entorno entorno) {
 		entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.altura,0, Color.BLUE);
+	}
+//	Dibujar imagen
+	public void dibujarImagenMago(Entorno entorno) {
+		entorno.dibujarImagen(this.imagen, this.x, this.y, 0, 1.5);
 	}
 	
 //------------Bordes/limites del mago----------

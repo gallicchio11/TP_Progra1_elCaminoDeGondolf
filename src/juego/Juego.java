@@ -73,22 +73,26 @@ public class Juego extends InterfaceJuego
 		// dibujamos el mapa en la primera capa 
 		this.entorno.dibujarImagen(imagenFondo, anchoVentana / 2 + 10, alturaVentana / 2, 0, 1.7);
 //		---------------------Mago--------------------------
-		this.mago.dibujar(entorno); //dibujamos al mago
+		this.mago.dibujarImagenMago(entorno); //dibujamos al mago
 				
 //--------Colision entre Mago y Rocas--------------------
 		if(this.entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) { //Movimiento izquierdo
 			if(mago.getX() - mago.getAncho() / 2 > 0 ) {
 				this.mago.moverIzquierda();
+		        mago.setImagenMago(Herramientas.cargarImagen("mago2.png"));
 				if(this.mago.colisionaRoca(rocas)) {
 					this.mago.moverDerecha();
+
 				}
 			}
 		}
 		if(this.entorno.estaPresionada(entorno.TECLA_DERECHA)) { //Movimiento Derecho
 			if(mago.getX() + mago.getAncho() / 2 < menu.getX() - menu.getAncho() / 2) {
 				this.mago.moverDerecha();
+		        mago.setImagenMago(Herramientas.cargarImagen("mago.png"));
 				if(this.mago.colisionaRoca(rocas)) {
 					this.mago.moverIzquierda();
+			        
 				}
 			}
 		}
