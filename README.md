@@ -80,3 +80,16 @@ Modificaciones en la clase Roca:
 - En el constructor, solo modificacmos la sintaxis. En vez de "ancho = 30", lo cambiamos a "this.ancho = 30". Lo mismo también pero con altura.
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5to Commit: Persecución de Murciélagos v1.0
+
+Modificaciones en clase Juego:
+- Creamos una variable llamada movimiento, el cual lo inicializamos en la sección de Juego, y le asignamos como valor 0 . Esta variable nos servirá para indicar la dirección en la que se encuentra el mago en relación con los murciélagos.
+- Agregamos más elementos en el array de tipo Murciélago.
+- Luego en la parte del tick, condicionamos a los murciélagos para que puedan moverse hacia donde se encuentre el mago. Para esto, recorremos con un for el array de murcielagos, y luego condicionamos. Cada condición es respectivo del lado que se encuentre el mago con los murcielagos; Por ejemplo, si el mago se encuentra por debajo del murcielago entonces, el murcielago se moverá para abajo. Además, se le asigna un valor a la variable un numero (1-4) que indicará a que lado tiene que moverse el murciélago. Por ende, si la variable movimiento es 1 entonces se moverá a abajo; si es 2, arriba; si es 3, izquierda; y si es 4, derecha.
+
+Modificaciones en la clase Murciélago:
+- La velocidad del murciélago se modifica a 5, misma velocidad que la del mago.
+- Se agrega movimientos de arriba y abajo para el murciélago.
+- Se agrega movimientoMurcielago que recibe la posición X e Y del mago. Esto es más que nada para que el murciélago, una vez que detecte que el mago se encuentra dentro de sus ejes, pueda moverse. Y cuando se mueva hasta la posición donde se encuentra el mago, el murcielago se mantendrá allí.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
