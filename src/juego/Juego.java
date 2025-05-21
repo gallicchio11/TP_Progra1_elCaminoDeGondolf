@@ -22,9 +22,15 @@ public class Juego extends InterfaceJuego
 			new Roca(550,500,1),
 
 	};
+	private int movimiento;
 	private Image imagenFondo = Herramientas.cargarImagen("mapa2.png"); 
 	private Murcielago[] murcielagos = {
-			new Murcielago(0,200)
+			new Murcielago(200,200),
+			new Murcielago(100,200),
+			new Murcielago(300,200),
+			new Murcielago(400,200),
+			new Murcielago(500,200),
+
 	};
 	                       
 	
@@ -43,7 +49,7 @@ public class Juego extends InterfaceJuego
 		this.entorno = new Entorno(this, "Proyecto para TP", anchoVentana, alturaVentana);
 		this.menu = new Menu(anchoVentana,alturaVentana); //inicializamos el menu
 		this.mago = new Mago(anchoVentana,alturaVentana,this.menu.getX()); //inicializamos al mago
-
+		this.movimiento = 0; // Indica la dirección de movimiento
 		// Inicializar lo que haga falta para el juego
 		// ...
 		
@@ -126,12 +132,47 @@ public class Juego extends InterfaceJuego
 		for (int i = 0 ; i < murcielagos.length;i++) { //Dibujamos a los murcielagos
 			murcielagos[i].dibujar(entorno);
 		}
-		for (int i = 0 ; i < murcielagos.length;i++) {
-			if(murcielagos[i].getX() + murcielagos[i].getAncho() / 2 < menu.getX() - menu.getAncho() / 2) {
-				this.murcielagos[i].moverDerecha();
+		for (int i = 0 ; i < murcielagos.length;i++) { 
+			if (this.murcielagos[i].getX () == this.mago.getX()  && this.murcielagos[i].getY () < this.mago.getY())  {
+				System.out.println("abajo"); // Si el mago se encuentra por debajo del murciélago
+				movimiento = 1;
 			}
+			else if (this.murcielagos[i].getX () == this.mago.getX()  && this.murcielagos[i].getY () > this.mago.getY()) {
+				System.out.println("arriba"); // Si el mago se encuentra por arriba del murciélago
+				movimiento = 2;
+			}
+			else if (this.murcielagos[i].getY () == this.mago.getY()  && this.murcielagos[i].getX () > this.mago.getX()) {
+				System.out.println("izquierda"); // Si el mago se encuentra a la izquierda del murciélago
+				movimiento = 3;
+			}
+			else if (this.murcielagos[i].getY () == this.mago.getY()  && this.murcielagos[i].getX () < this.mago.getX()) {
+				System.out.println("derecha"); // Si el mago se encuentra a la derecha del murciélago
+				movimiento = 4;
+
+			}
+			if(movimiento==1){ // Dependiendo del lado que se encuentre el mago, los murcielagos se moverán a x lado
+				this.murcielagos[i].moverAbajo();
+				
+			}
+			if(movimiento==2){
+				this.murcielagos[i].moverArriba();
+				
+			}
+			if(movimiento==3){
+				this.murcielagos[i].moverIzquierda();
+				
+			}
+			if(movimiento==4){
+				this.murcielagos[i].moverDerecha();
+				
+			}
+			else {
+				movimiento=movimiento;
+			}
+			
+			
 		}	
-		
+		System.out.println(movimiento);
 	}
 		
 	@SuppressWarnings("unused")

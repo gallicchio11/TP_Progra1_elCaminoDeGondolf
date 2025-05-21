@@ -11,13 +11,13 @@ public class Murcielago {
 	private int altura;
 	private int velocidad;
 
-	//	Constructor
+//	Constructor
 	public Murcielago(int x, int y) {
 		this.x = x;
 		this.y = y;
 		this.ancho = 20;
 		this.altura = 20;
-		this.velocidad = 2;
+		this.velocidad = 5;
 	}
 	
 //	Getters y Setters
@@ -62,11 +62,22 @@ public class Murcielago {
 	}
 	
 //	Movimiento Murcielago
-	public void moverDerecha() {
+	public void moverDerecha() { 
 		this.x = x + velocidad;
 	}
 	public void moverIzquierda() {
 		this.x = x - velocidad;
+	}
+	public void moverAbajo() {
+		this.y = y + velocidad;
+	}
+	public void moverArriba() {
+		this.y = y - velocidad;
+	}
+	public void movimientoMurcielago(int posXM , int posYM ) {
+		if(this.ancho == posXM){
+			moverAbajo();	
+		}
 	}
 	
 //	Dibujar
