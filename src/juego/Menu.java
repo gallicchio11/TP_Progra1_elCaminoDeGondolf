@@ -13,11 +13,11 @@ public class Menu {
     private Image imagen;
 
 //	Constructor
-	public Menu(int anchoVentana, int alturaVentana){
-		this.x = anchoVentana - this.ancho /2 ;
-		this.y = alturaVentana/2;
-		this.ancho = anchoVentana - anchoVentana/2;
-		this.altura = alturaVentana;
+	public Menu(int anchoVentana, int alturaVentana){ //AnchoVentana = 900 ; alturaVentana = 600
+		this.ancho = (anchoVentana - anchoVentana/2) / 2; // (900-450) / 2 = 225
+		this.altura = alturaVentana; // 600
+		this.x = anchoVentana - this.ancho /2 ; // sería 900 - (225 /2) = 900-112.5 = 788
+		this.y = alturaVentana / 2; // sería 600/2 = 300 
         this.imagen = Herramientas.cargarImagen("menu.png");
 
 
@@ -29,8 +29,10 @@ public class Menu {
 	}
 //	Dibujar imagen
 	public void dibujarImagenMenu(Entorno entorno) {
-		entorno.dibujarImagen(this.imagen,this.x-115, this.y, 0, 1);
+		entorno.dibujarImagen(this.imagen,this.x, this.y, 0, 1.1);
 	}
+	
+	
 	
 //	Getters y Setters
 	public int getX() {

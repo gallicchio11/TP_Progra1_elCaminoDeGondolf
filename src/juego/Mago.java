@@ -19,11 +19,11 @@ public class Mago {
 	};
 
 //	Constructor
-	public Mago(int anchoVentana, int alturaVentana, int x) {
-		this.x = anchoVentana/2  ;
-		this.y = alturaVentana/2;
+	public Mago(int anchoMenu, int alturaVentana) {
 		this.ancho = 30;
 		this.altura = 30;
+		this.x = anchoMenu + anchoMenu/2 ; // 225 + 112.5 = 338 aprox
+		this.y = (alturaVentana/2) - this.altura/2; // (600/2) - (30/2) --> 300 - 15 = 285
 		this.velocidad = 5;
         this.imagen = Herramientas.cargarImagen("mago.png");
 
@@ -134,6 +134,4 @@ public class Mago {
 	public void moverAbajo() {
 		this.y = y + velocidad;	
 	}
-	
-	
 }

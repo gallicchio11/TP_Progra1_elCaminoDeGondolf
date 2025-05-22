@@ -1,5 +1,6 @@
 package juego;
 import java.awt.Image;
+import java.util.Random;
 import java.awt.Image;
 
 import entorno.Entorno;
@@ -22,16 +23,9 @@ public class Juego extends InterfaceJuego
 			new Roca(550,500,1),
 
 	};
-	private int movimiento;
+//	private int movimiento;
 	private Image imagenFondo = Herramientas.cargarImagen("mapa2.png"); 
-	private Murcielago[] murcielagos = {
-			new Murcielago(200,200),
-			new Murcielago(100,200),
-			new Murcielago(300,200),
-			new Murcielago(400,200),
-			new Murcielago(500,200),
-
-	};
+	private Murcielago[] murcielagos = new Murcielago[10]; // Declaramos un array con 10 elementos
 	                       
 	
 	// Variables y métodos propios de cada grupo
@@ -41,6 +35,9 @@ public class Juego extends InterfaceJuego
 	}
 	
 	
+	
+	
+	
 	Juego()
 	{
 		// Inicializa el objeto entorno
@@ -48,11 +45,12 @@ public class Juego extends InterfaceJuego
 		
 		this.entorno = new Entorno(this, "Proyecto para TP", anchoVentana, alturaVentana);
 		this.menu = new Menu(anchoVentana,alturaVentana); //inicializamos el menu
-		this.mago = new Mago(anchoVentana,alturaVentana,this.menu.getX()); //inicializamos al mago
-		this.movimiento = 0; // Indica la dirección de movimiento
+		this.mago = new Mago(this.menu.getAncho(),alturaVentana); //inicializamos al mago
+//		this.movimiento = 0; // Indica la dirección de movimiento
+		inicializarMurcielago(); //Vamos a la funcion Inicializar murcielagos 
+		
 		// Inicializar lo que haga falta para el juego
 		// ...
-		
 			
 		
 		
@@ -70,14 +68,45 @@ public class Juego extends InterfaceJuego
 	 * (ver el enunciado del TP para mayor detalle).
 	 */
 	
-	
-	
+	public void inicializarMurcielago() {
+		Random random = new Random();//inicializamos un objeto random
+		
+		for (int i = 0; i< murcielagos.length;i++) { // recorremos los murcielagos
+			int borde = random.nextInt(4); // Nos indica entre el 0 al 3
+			int x = 0; // Inicializamos X e Y en 0
+			int y = 0; 
+			String direccion = "";
+			if(borde == 0) { // Es el lado Izquierdo 
+				x = 0;
+				y = random.nextInt(alturaVentana);
+				direccion = "izquierda";
+				
+			}else if(borde == 1){ // Es el lado Derecho 
+				x = anchoVentana - this.menu.getAncho();
+				y = random.nextInt(alturaVentana);
+				direccion = "derecha";
+				
+			}else if(borde == 2){ // Es el lado Superior
+				x = random.nextInt(anchoVentana - this.menu.getAncho());
+				y = 0;
+				direccion = "arriba";
+				
+			}else { // Es el lado Inferior 
+				x = random.nextInt(anchoVentana - this.menu.getAncho());
+				y = alturaVentana;
+				direccion = "abajo";
+			}
+			this.murcielagos[i] = new Murcielago(x, y, direccion);
+		}
+	}
+//	
 	public void tick()
 	{
 		// Procesamiento de un instante de tiempo
 		// ...
 		// dibujamos el mapa en la primera capa 
 		this.entorno.dibujarImagen(imagenFondo, anchoVentana / 2 + 10, alturaVentana / 2, 0, 1.7);
+		
 //		---------------------Mago--------------------------
 		this.mago.dibujarImagenMago(entorno); //dibujamos al mago
 				
@@ -129,51 +158,40 @@ public class Juego extends InterfaceJuego
 			
 		}
 //		  ---------------------------Murcielago----------------------
-		for (int i = 0 ; i < murcielagos.length;i++) { //Dibujamos a los murcielagos
-			murcielagos[i].dibujar(entorno);
-		}
-		for (int i = 0 ; i < murcielagos.length;i++) { 
-			if (this.murcielagos[i].getX () == this.mago.getX()  && this.murcielagos[i].getY () < this.mago.getY())  {
-				System.out.println("abajo"); // Si el mago se encuentra por debajo del murciélago
-				movimiento = 1;
-			}
-			else if (this.murcielagos[i].getX () == this.mago.getX()  && this.murcielagos[i].getY () > this.mago.getY()) {
-				System.out.println("arriba"); // Si el mago se encuentra por arriba del murciélago
-				movimiento = 2;
-			}
-			else if (this.murcielagos[i].getY () == this.mago.getY()  && this.murcielagos[i].getX () > this.mago.getX()) {
-				System.out.println("izquierda"); // Si el mago se encuentra a la izquierda del murciélago
-				movimiento = 3;
-			}
-			else if (this.murcielagos[i].getY () == this.mago.getY()  && this.murcielagos[i].getX () < this.mago.getX()) {
-				System.out.println("derecha"); // Si el mago se encuentra a la derecha del murciélago
-				movimiento = 4;
+		
+		for (int i = 0; i < murcielagos.length; i++) {
+			//distancia entre 2 puntos en cada eje
+		    int dx = this.mago.getX() - this.murcielagos[i].getX();
+		    int dy = this.mago.getY() - this.murcielagos[i].getY();
 
-			}
-			if(movimiento==1){ // Dependiendo del lado que se encuentre el mago, los murcielagos se moverán a x lado
-				this.murcielagos[i].moverAbajo();
-				
-			}
-			if(movimiento==2){
-				this.murcielagos[i].moverArriba();
-				
-			}
-			if(movimiento==3){
-				this.murcielagos[i].moverIzquierda();
-				
-			}
-			if(movimiento==4){
-				this.murcielagos[i].moverDerecha();
-				
-			}
-			else {
-				movimiento=movimiento;
-			}
+		    int distanciaCuadrada = dx * dx + dy * dy; // sacamos cuadrado de X y D multiplcando sus lados y sumandolos.
+
+		    if (distanciaCuadrada > 0)// condicional para verificar que la distancia no sea 0(al ser 0 significara que el murcielago esta encima de el mago)
+		    						 //posible uso aplicable a daño recibido al mago
+		    	{
+		        int distancia = (int) Math.sqrt(distanciaCuadrada); // Sigue siendo int
+
+		        int escalaM = 5; // con la escala de movimiento definimos de cuanto sera la velocidad a la que se movera
+		        //la escala se toma como la relacion de distancia entre 2 ejes, si uno aumenta el otro tambien, por lo caul se utilizara el mismo valor, osea escalaM
+		        
+		        
+		        int vx = dx * escalaM / distancia;//normalizamos la velocidad multiplicandola por nuestra escala y dividiendola por distanciaa("hipotenusa")
+		        int vy = dy * escalaM/ distancia;//para velocidad de X e Y
+		        System.out.println(vy);
+		        System.out.println(vx);
+		        
+		        //actualizamos la posicion de nuestro murcielago con setx/y en lugar de crear 4 condicionales para eso(UTILIZAR SETTERS Y GETTERS!!!!)
+		        this.murcielagos[i].setX(this.murcielagos[i].getX() + vx);
+		        this.murcielagos[i].setY(this.murcielagos[i].getY() + vy);
+		    }
+		    //dibujamos posicion de murcielago actualizada
+		    this.murcielagos[i].dibujar(entorno);
 			
-			
-		}	
-		System.out.println(movimiento);
+
+		}
+
 	}
+
 		
 	@SuppressWarnings("unused")
 	public static void main(String[] args)
@@ -181,4 +199,3 @@ public class Juego extends InterfaceJuego
 		Juego juego = new Juego();
 	}
 }
-
