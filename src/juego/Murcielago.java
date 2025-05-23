@@ -96,7 +96,21 @@ public class Murcielago {
 			moverAbajo();	
 		}
 	}
-//	
+	
+//	Bordes/Limites del murciélago
+	public int limiteSuperior() {
+		return this.y - this.altura/2 ;
+	}
+	public int limiteInferior() {
+		return this.y + this.altura/2;
+	}
+	public int limiteIzquierdo() {
+		return this.x - this.ancho/2;
+	}
+	public int limiteDerecho() {
+		return this.x + this.ancho/2;
+	}
+
 //	Dibujar
 	public void dibujar(Entorno entorno) {
 		entorno.dibujarRectangulo(this.x, this.y,ancho, altura,0, Color.YELLOW);
