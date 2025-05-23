@@ -1,7 +1,6 @@
 package juego;
 import java.awt.Color;
 import java.awt.Image;
-import java.awt.Menu;
 
 import entorno.Entorno;
 import entorno.Herramientas;
@@ -13,10 +12,46 @@ public class Mago {
 	private int altura;
 	private int velocidad;
     private Image imagen;
-	private String [] imagenes= {
-			("mago.png"),
-			("mago2.png"),
-	};
+    
+    //variables de animacion para movimiento  
+    private int contadorFrames = 0;
+    private int velocidadFrames = 10;
+    
+    //  nos determinara el fram actual del movimiento hacia la direccion
+    private int frameAbajo = 0;
+    private int frameArriba = 0;
+    private int frameIzquierda = 0;
+    private int frameDerecha = 0;
+
+    //nuestras listas de imagenes para cada movimiento(4 direcciones de momento) 
+    private String[] movimientoAbajoMago = {//frames para abajo
+    	    "caminar_abajo1.png",
+    	    "caminar_abajo2.png",
+    	    "caminar_abajo3.png",
+    	    "caminar_abajo4.png"
+    	};
+
+    	private String[] movimientoArribaMago = {//frames para arriba
+    	    "caminar_arriba1.png",
+    	    "caminar_arriba2.png",
+    	    "caminar_arriba3.png",
+    	    "caminar_arriba4.png"
+    	};
+
+    	private String[] movimientoIzquierdaMago = {//frames para la izquierda
+    	    "caminar_izquierda1.png",
+    	    "caminar_izquierda2.png",
+    	    "caminar_izquierda3.png",
+    	    "caminar_izquierda4.png"
+    	};
+
+    	private String[] movimientoDerechaMago = {//frames para la derecha
+    	    "caminar_derecha1.png",
+    	    "caminar_derecha2.png",
+    	    "caminar_derecha3.png",
+    	    "caminar_derecha4.png"
+    	};
+
 
 //	Constructor
 	public Mago(int anchoMenu, int alturaVentana) {
@@ -25,10 +60,30 @@ public class Mago {
 		this.x = anchoMenu + anchoMenu/2 ; // 225 + 112.5 = 338 aprox
 		this.y = (alturaVentana/2) - this.altura/2; // (600/2) - (30/2) --> 300 - 15 = 285
 		this.velocidad = 5;
-        this.imagen = Herramientas.cargarImagen("mago.png");
+        this.imagen = Herramientas.cargarImagen("caminar_abajo2.png");
 
 	}
+
+//  -----------Metodo de animacion ---------(Reutilizar en otros objetos como murcielagos para darle animacion)
+// tener en cuenta variables: int contadorFrames, int velocidadFrames, int frameDireccion, String[] movimientDireccionMago
 	
+	private int animarMovimiento(String[] frames, int frameActual) {
+	    contadorFrames++; // // aumentamos un contador de frames para generar delay entre frame y frame
+
+	    if (contadorFrames >= velocidadFrames) {// cuando llegue a 5 se aplicara el siguiente frame
+	        this.imagen = Herramientas.cargarImagen(frames[frameActual]); //cargamos el frame desde el array de imagenes "movimientoAbajoMago" 
+	        frameActual++; // aumenta frame
+
+	        if (frameActual >= frames.length) {// si el Frame abajo es  mayor o igual a el tamaño total de nuestro array de frames, volvera a 0
+	            frameActual = 0; // reiniciamos nuestro frame actual para volver al inicio(un bucle)
+	        }
+
+	        contadorFrames = 0; // reiniciamos el delay entre frame y frame
+	    }
+
+	    return frameActual; // nos devolvera el frame actual
+	}
+
 //	-----------Getter y Setter--------------
 	public int getX() {
 		return x;
@@ -72,9 +127,8 @@ public class Mago {
 	public void setImagenMago(Image imagen) {
 		this.imagen = imagen;
 	}
-	public Image getImagen() {
-		return this.imagen = imagen;
-	}
+
+
 //	----------------------------------------
 	
 //	Dibujar
@@ -83,7 +137,7 @@ public class Mago {
 	}
 //	Dibujar imagen
 	public void dibujarImagenMago(Entorno entorno) {
-		entorno.dibujarImagen(this.imagen, this.x, this.y, 0, 1.5);
+		entorno.dibujarImagen(this.imagen, this.x, this.y, 0, 3);
 	}
 	
 //------------Bordes/limites del mago----------
@@ -121,17 +175,27 @@ public class Mago {
 //	Movimientos
 	public void moverDerecha() {
 		this.x = x + velocidad;
+	    frameDerecha = animarMovimiento(movimientoDerechaMago, frameDerecha); //animacion derecha
+
 	}
 	
 	public void moverIzquierda() {
 		this.x = x - velocidad;
+	    frameIzquierda = animarMovimiento(movimientoIzquierdaMago, frameIzquierda); //animacion derecha
+
 	}
 	
 	public void moverArriba() {	
 		this.y = y - velocidad;
+	    frameArriba = animarMovimiento(movimientoArribaMago, frameArriba); //animacion arriba
+
 	}
 	
 	public void moverAbajo() {
-		this.y = y + velocidad;	
+	    this.y = y + velocidad;
+	    frameAbajo = animarMovimiento(movimientoAbajoMago, frameAbajo);//animacion arriba
+	    															   //llamamos a nuestro animarMovimiento para cambiar de frame
 	}
+
+
 }

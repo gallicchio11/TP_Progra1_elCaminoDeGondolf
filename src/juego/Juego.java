@@ -114,7 +114,6 @@ public class Juego extends InterfaceJuego
 		if(this.entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) { //Movimiento izquierdo
 			if(mago.getX() - mago.getAncho() / 2 > 0 ) {
 				this.mago.moverIzquierda();
-		        mago.setImagenMago(Herramientas.cargarImagen("mago2.png"));
 				if(this.mago.colisionaRoca(rocas)) {
 					this.mago.moverDerecha();
 
@@ -124,7 +123,6 @@ public class Juego extends InterfaceJuego
 		if(this.entorno.estaPresionada(entorno.TECLA_DERECHA)) { //Movimiento Derecho
 			if(mago.getX() + mago.getAncho() / 2 < menu.getX() - menu.getAncho() / 2) {
 				this.mago.moverDerecha();
-		        mago.setImagenMago(Herramientas.cargarImagen("mago.png"));
 				if(this.mago.colisionaRoca(rocas)) {
 					this.mago.moverIzquierda();
 			        
@@ -189,6 +187,8 @@ public class Juego extends InterfaceJuego
 			
 
 		}
+
+	    
 
 	}
 
