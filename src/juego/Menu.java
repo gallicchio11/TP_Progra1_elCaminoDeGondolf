@@ -20,7 +20,6 @@ public class Menu {
 		this.y = alturaVentana / 2; // sería 600/2 = 300 
         this.imagen = Herramientas.cargarImagen("menu.png");
 
-
 	}
 
 //	Dibujar
@@ -65,5 +64,14 @@ public class Menu {
 
 	public void setAncho(int ancho) {
 		this.ancho = ancho;
+	}
+//	Boton Hechizo agua
+	public boolean hechizoAgua() {
+		return true;
+	}
+	
+//	Boton Hechizo fuego
+	public boolean hechizoFuego() {
+		return true;
 	}
 }

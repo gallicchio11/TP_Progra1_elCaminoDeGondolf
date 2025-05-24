@@ -6,6 +6,7 @@ import entorno.Entorno;
 import entorno.Herramientas;
 
 public class Mago {
+	// variables de base par el mago	
 	private int x;
 	private int y;
 	private int ancho;
@@ -51,6 +52,8 @@ public class Mago {
     	    "caminar_derecha3.png",
     	    "caminar_derecha4.png"
     	};
+//  Variable para direccionar el disparo
+    private String direccion;
 
 
 //	Constructor
@@ -61,6 +64,7 @@ public class Mago {
 		this.y = (alturaVentana/2) - this.altura/2; // (600/2) - (30/2) --> 300 - 15 = 285
 		this.velocidad = 5;
         this.imagen = Herramientas.cargarImagen("caminar_abajo2.png");
+        this.direccion = "abajo";
 
 	}
 
@@ -128,6 +132,12 @@ public class Mago {
 		this.imagen = imagen;
 	}
 
+	public String getDireccion() {
+		return this.direccion;
+	}
+	public void setDireccion(String dir) {
+		this.direccion = dir;
+	}
 
 //	----------------------------------------
 	
