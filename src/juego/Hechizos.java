@@ -88,34 +88,24 @@ public class Hechizos {
 		this.altura = 20;
 		this.velocidad = 10;
 		this.angulo = angulo;
-		
 	    calcularTrayectoria(xInicio, yInicio, xDestino, yDestino);
-		this.direccion = direccion;
-		this.nombre = nombre;
-		this.areaDeEfecto = areaDeEfecto;
-		this.costoEnergia = costoEnergia;
-		
         this.imagen = Herramientas.cargarImagen("fuego1.png");
-
-		
 	}
+	
 	private int animarMovimiento(String[] frames, int frameActual) {
 	    contadorFrames++; // // aumentamos un contador de frames para generar delay entre frame y frame
 
 	    if (contadorFrames >= velocidadFrames) {// cuando llegue a 5 se aplicara el siguiente frame
 	        this.imagen = Herramientas.cargarImagen(frames[frameActual]); //cargamos el frame desde el array de imagenes "movimientoAbajoMago" 
 	        frameActual++; // aumenta frame
-
+	        
 	        if (frameActual >= frames.length) {// si el Frame abajo es  mayor o igual a el tamaño total de nuestro array de frames, volvera a 0
 	            frameActual = 0; // reiniciamos nuestro frame actual para volver al inicio(un bucle)
 	        }
-
 	        contadorFrames = 0; // reiniciamos el delay entre frame y frame
 	    }
-
 	    return frameActual; // nos devolvera el frame actual
 	}
-	
 	
 //---------------Getters y Setters -------------
 	public int getX() {
@@ -173,12 +163,11 @@ public class Hechizos {
 		this.costoEnergia = costoEnergia;
 	}
 
-
 	// 	Dibujar Hechizo 
 	public void dibujar(Entorno entorno) {
 		entorno.dibujarRectangulo(this.x, this.y,ancho, altura,0, Color.red);
 	}
-//	Dibujar imagen Hechizo
+	//	Dibujar imagen Hechizo
 	public void dibujarImagenFuego(Entorno entorno, int angulo) {
 		entorno.dibujarImagen(this.imagen, this.x, this.y, this.angulo, 2);
 	}
@@ -190,18 +179,16 @@ public class Hechizos {
         int distanciaCuadrada = dx * dx + dy * dy;
         if (distanciaCuadrada > 0) {
             int distancia = (int) Math.sqrt(distanciaCuadrada);
-            int escala = 5; // Velocidad constante
+            int escala = 10; // Velocidad constante
             this.vx = dx * escala / distancia;
             this.vy = dy * escala / distancia;
             
-
             // calculamos el angulo engrados 
             double anguloRad = Math.atan2(dy, dx);
             double anguloGrados = (int) Math.round(Math.toDegrees(anguloRad));
             //evitamos que sea un resultado negativo(me cuesta encontrar una logica para calcular el angulo con un numero negativo)
             anguloGrados = (anguloGrados + 360) % 360;  // Versión segura para evitar negativos
 
-            
             if ((anguloGrados >= 348.75 && anguloGrados < 360) || (anguloGrados >= 0 && anguloGrados < 11.25)) {
                 direccion = 4.75; // derecha
             } else if (anguloGrados >= 11.25 && anguloGrados < 33.75) {
@@ -235,38 +222,14 @@ public class Hechizos {
             } else if (anguloGrados >= 326.25 && anguloGrados < 348.75) {
                 direccion = 4.5; // casi derecha
             }
-
-            this.angulo = direccion;
-            System.out.println(this.angulo);
- 
+            this.angulo = direccion; 
         }
-        
     }
-// 	Movimientos Hechizos
-///	public void mover() {
-    //if(this.direccion.equals("derecha")) { //Movimiento Derecha
-			//this.x = x + velocidad;
-			//frameIzquierda = animarMovimiento(movimientoHechizo, frameIzquierda);//animacion derecha
-
-		    //}else if(this.direccion.equals("izquierda")) { //Movimiento Izquierda
-			//this.x = x - velocidad;
-			//		    frameIzquierda = animarMovimiento(movimientoHechizo, frameIzquierda); 
-
-		    //}else if(this.direccion.equals("arriba")) { //Movimiento Arriba
-			//this.y = y - velocidad;
-			//frameIzquierda = animarMovimiento(movimientoHechizo, frameIzquierda); 
-
-		    //}else {
-			//		    this.y = y + velocidad; //Movimiento Abajo
-    		//frameIzquierda = animarMovimiento(movimientoHechizo, frameIzquierda); 
-
-		    //}
-		//	}
+    
     public void mover() {
         this.x += vx;
         this.y += vy;
 		frameIzquierda = animarMovimiento(movimientoHechizo, frameIzquierda);//animacion derecha
-
     }
 		
 //	Bordes/Limites del Hechizo
@@ -282,9 +245,4 @@ public class Hechizos {
 	public int limiteDerecho() {
 		return this.x + this.ancho/2;
 	}
-
-
-
-
 }
-

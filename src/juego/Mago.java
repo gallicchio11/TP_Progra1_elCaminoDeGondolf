@@ -12,6 +12,7 @@ public class Mago {
 	private int ancho;
 	private int altura;
 	private int velocidad;
+	private int vida;
     private Image imagen;
     
     //variables de animacion para movimiento  
@@ -65,6 +66,7 @@ public class Mago {
 		this.velocidad = 5;
         this.imagen = Herramientas.cargarImagen("caminar_abajo2.png");
         this.direccion = "abajo";
+        this.vida = 10;
 
 	}
 
@@ -138,10 +140,17 @@ public class Mago {
 	public void setDireccion(String dir) {
 		this.direccion = dir;
 	}
+	public int getVida() {
+		return vida;
+	}
 
+	public void setVida(int vida) {
+		this.vida = vida;
+	}
+	
 //	----------------------------------------
 	
-//	Dibujar
+	//	Dibujar
 	public void dibujar(Entorno entorno) {
 		entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.altura,0, Color.BLUE);
 	}
@@ -207,5 +216,17 @@ public class Mago {
 	    															   //llamamos a nuestro animarMovimiento para cambiar de frame
 	}
 
+//	----------- Perder vida ------------
+	public void perderVida() {
+		this.vida --;
+	}
+//	----------- Detectar si Murio --------
+	public boolean estaMuerto() {
+		if(this.vida == 0) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 
 }
