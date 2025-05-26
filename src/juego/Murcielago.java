@@ -115,5 +115,9 @@ public class Murcielago {
 	public void dibujar(Entorno entorno) {
 		entorno.dibujarRectangulo(this.x, this.y,ancho, altura,0, Color.YELLOW);
 	}
+
+
+	
+//colisiones murcielago 
 	
 }

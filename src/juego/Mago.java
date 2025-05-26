@@ -167,7 +167,7 @@ public class Mago {
 //	Colision Mago-Roca
 	//Esto nos sirve para determinar si el mago colisiona
 	//con las rocas.
-	public boolean colisionaRoca(Roca[] rocas) {  
+	public boolean colisionaMago(Roca[] rocas) {  
 		for(int i =0; i < rocas.length;i++) {
 			if (this.limiteIzquierdo() < rocas[i].limiteDerecho() &&
 				this.limiteSuperior() < rocas[i].limiteInferior() &&
@@ -179,7 +179,7 @@ public class Mago {
 		}
 		return false; // sino, no colisiona
 	}
-	
+
 	
 	
 //	Movimientos

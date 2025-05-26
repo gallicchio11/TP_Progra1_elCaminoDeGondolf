@@ -24,6 +24,10 @@ public class Juego extends InterfaceJuego
 
 	};
 //	private int movimiento;
+	private String [] punteroImagenes = {"puntero.png","puntero_fuego.png","puntero_hielo.png"};
+	private int tipopuntero = 2;
+	private Image imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero]); 
+
 	private Image imagenFondo = Herramientas.cargarImagen("mapa2.png"); 
 	private int cantMurcielagoPantalla = 10;
 	private int cantMurcielagoTotal = 50;
@@ -34,69 +38,31 @@ public class Juego extends InterfaceJuego
 	private Hechizos hechizoAgua2; // Declaramos Hechizos
 	private Hechizos hechizoAgua3; // Declaramos Hechizos
 	
-	
-	
+	private int punteroX;
+	private int punteroY;
 	
 	// Variables y métodos propios de cada grupo
 	// ...
 	
+
+//----------------Calcular angulo-----------------------------
+
 //----------------Métodos propios para Menu-----------------------
 	public void dibujarImagenMenu(Entorno entorno) {
 		entorno.dibujarImagen(imagenFondo,0, 0, 0, 1);
 	}
+	//----------------Métodos propios para Puntero-----------------------
+	public void dibujarImagenPuntero(Entorno entorno, int x, int y) {
+		entorno.dibujarImagen(imagenPuntero,x, y, 0, 1);
+		}
 
-//-----------------	Métodos propios para Murcielago ------------------------
-	public void generarMurcielago(int k) {
-		if(cantMurcielagoGenerados >= cantMurcielagoTotal) {
-			return; // Posible uso para cerrar el juego --> darle un end game
-		}
-		Random random = new Random();//inicializamos un objeto random
-		int borde = random.nextInt(4); // Nos indica entre el 0 al 3
-		int x = 0; // Inicializamos X e Y en 0
-		int y = 0; 
-		String direccion = "";
-		
-		if(borde == 0) { // Es el lado Izquierdo 
-			x = 0;
-			y = random.nextInt(alturaVentana);
-			direccion = "izquierda";
-				
-		}else if(borde == 1){ // Es el lado Derecho 
-			x = anchoVentana - this.menu.getAncho();
-			y = random.nextInt(alturaVentana);
-			direccion = "derecha";
-				
-		}else if(borde == 2){ // Es el lado Superior
-			x = random.nextInt(anchoVentana - this.menu.getAncho());
-			y = 0;
-			direccion = "arriba";
-				
-		}else { // Es el lado Inferior 
-			x = random.nextInt(anchoVentana - this.menu.getAncho());
-			y = alturaVentana;
-			direccion = "abajo";
-		}
-		this.murcielagos[k] = new Murcielago(x, y, direccion);
-		cantMurcielagoGenerados++;
-	}
 //---------------Métodos propios para Colision----------------------
 	
 //	Colisión entre mago y murcielago
 	/* Primero recorremos todos los murcielagos. Luego de eso preguntamos si el murcielago que
 	 * hace colision con el mago es diferente de null. Si es así, entonces si colisiona, será null
 	 */
-	public void colisionaMagoMurcielago(Murcielago[] murcielagos) {  
-		for(int i =0; i < murcielagos.length;i++) {
-			if(this.murcielagos[i] != null) {
-				if (this.mago.limiteIzquierdo() < this.murcielagos[i].limiteDerecho() &&
-					this.mago.limiteSuperior() < this.murcielagos[i].limiteInferior() &&
-					this.mago.limiteInferior() > this.murcielagos[i].limiteSuperior() &&
-					this.mago.limiteDerecho() > this.murcielagos[i].limiteIzquierdo()) {
-					this.murcielagos[i] = null; 
-				}
-			}
-		}
-	}
+
 	
 //	Colision entre Hechizo y murcielago.
 	public void colisionaHechizoAguaMurcielago(Murcielago[] murcielagos) {
@@ -144,7 +110,11 @@ public class Juego extends InterfaceJuego
 //		Para hechizoAgua1
 		if(this.hechizoAgua1 != null) {
 			this.hechizoAgua1.mover(); // Para que se mueva
-			this.hechizoAgua1.dibujar(entorno); // Para que se dibuje
+			this.hechizoAgua1.mover(); // Para que se mueva
+
+			this.hechizoAgua1.mover(); // Para que se mueva
+
+			this.hechizoAgua1.dibujarImagenFuego(entorno,1); // Para que se dibuje
 			// Bordes
 			if(hechizoAgua1.getX() -this.hechizoAgua1.getAncho() / 2 < 0 ||  // Si supera el izquierdo
 				this.hechizoAgua1.getX() + this.hechizoAgua1.getAncho() / 2 > menu.getX() - menu.getAncho() / 2 || // Si supera el derecho
@@ -156,7 +126,7 @@ public class Juego extends InterfaceJuego
 //		Para hechizoAgua 2
 		if(this.hechizoAgua2 != null) {
 			this.hechizoAgua2.mover();// Para que se mueva
-			this.hechizoAgua2.dibujar(entorno); // Para que se dibuje
+			this.hechizoAgua2.dibujarImagenFuego(entorno,1); // Para que se dibuje
 			// Bordes
 			if(hechizoAgua2.getX() -this.hechizoAgua2.getAncho() / 2 < 0 ||  // Si supera el izquierdo
 				this.hechizoAgua2.getX() + this.hechizoAgua2.getAncho() / 2 > menu.getX() - menu.getAncho() / 2 || // Si supera el derecho
@@ -169,7 +139,7 @@ public class Juego extends InterfaceJuego
 //		Para hechizoAgua3
 		if(this.hechizoAgua3 != null) {
 			this.hechizoAgua3.mover(); // Para que se mueva
-			this.hechizoAgua3.dibujar(entorno); // Para que se dibuje
+			this.hechizoAgua3.dibujarImagenFuego(entorno,1); // Para que se dibuje
 			// Bordes
 			if(hechizoAgua3.getX() -this.hechizoAgua3.getAncho() / 2 < 0 ||  // Si supera el izquierdo
 				this.hechizoAgua3.getX() + this.hechizoAgua3.getAncho() / 2 > menu.getX() - menu.getAncho() / 2 || // Si supera el derecho
@@ -225,7 +195,7 @@ public class Juego extends InterfaceJuego
 			if(mago.getX() - mago.getAncho() / 2 > 0 ) {
 				this.mago.moverIzquierda();
 				this.mago.setDireccion("izquierda");
-				if(this.mago.colisionaRoca(rocas)) {
+				if(this.mago.colisionaMago(rocas)) {
 					this.mago.moverDerecha();
 
 				}
@@ -236,7 +206,7 @@ public class Juego extends InterfaceJuego
 				this.mago.moverDerecha();
 				this.mago.setDireccion("derecha");
 
-				if(this.mago.colisionaRoca(rocas)) {
+				if(this.mago.colisionaMago(rocas)) {
 					this.mago.moverIzquierda();
 			        
 				}
@@ -247,7 +217,7 @@ public class Juego extends InterfaceJuego
 				this.mago.moverArriba();
 				this.mago.setDireccion("arriba");
 
-				if(this.mago.colisionaRoca(rocas)) {
+				if(this.mago.colisionaMago(rocas)) {
 					this.mago.moverAbajo();
 				}
 			}
@@ -257,7 +227,7 @@ public class Juego extends InterfaceJuego
 				this.mago.moverAbajo();
 				this.mago.setDireccion("abajo");
 
-				if(this.mago.colisionaRoca(rocas)) {
+				if(this.mago.colisionaMago(rocas)) {
 					this.mago.moverArriba();
 				}
 			}
@@ -275,61 +245,27 @@ public class Juego extends InterfaceJuego
 //	--------------------------Persecusión Murcielago------------------------------
 		for (int i = 0; i < murcielagos.length; i++) {
 			if(this.murcielagos[i] != null) { // Si el murcielago es diferente de null, lo persigue
-				//distancia entre 2 puntos en cada eje
-			    int dx = this.mago.getX() - this.murcielagos[i].getX();
-			    int dy = this.mago.getY() - this.murcielagos[i].getY();
-	
-			    int distanciaCuadrada = dx * dx + dy * dy; // sacamos cuadrado de X y D multiplcando sus lados y sumandolos.
-	
-			    if (distanciaCuadrada > 0)// condicional para verificar que la distancia no sea 0(al ser 0 significara que el murcielago esta encima de el mago)
-			    						 //posible uso aplicable a daño recibido al mago
-			    	{
-			        int distancia = (int) Math.sqrt(distanciaCuadrada); // Sigue siendo int
-	
-			        int escalaM = 3; // con la escala de movimiento definimos de cuanto sera la velocidad a la que se movera
-			        //la escala se toma como la relacion de distancia entre 2 ejes, si uno aumenta el otro tambien, por lo caul se utilizara el mismo valor, osea escalaM
-			        
-			        
-			        int vx = dx * escalaM / distancia;//normalizamos la velocidad multiplicandola por nuestra escala y dividiendola por distanciaa("hipotenusa")
-			        int vy = dy * escalaM/ distancia;//para velocidad de X e Y
-			     
-			        
-			        //actualizamos la posicion de nuestro murcielago con setx/y en lugar de crear 4 condicionales para eso(UTILIZAR SETTERS Y GETTERS!!!!)
-			        this.murcielagos[i].setX(this.murcielagos[i].getX() + vx);
-			        this.murcielagos[i].setY(this.murcielagos[i].getY() + vy);
-			    }
+				Funciones_utiles.seguimientoMurcielago(mago, murcielagos[i]); // Actualiza posición del murcielago actual
+
 			    //dibujamos posicion de murcielago actualizada
 			    this.murcielagos[i].dibujar(entorno);
 			}
 		}
 		
 //		-----------------Colision entre Mago y Murciélago--------------------------------
-		colisionaMagoMurcielago(murcielagos); // Esto va indicando si el murcielago colisiona con mago
+		Funciones_utiles.colisionMagoMurcielago(mago, murcielagos); // Esto va indicando si el murcielago colisiona con mago
 											  // Si es así, entonces el murcielago será null
 		
 //		-------------------Restablecer Murcielagos------------------------------------
-		int vivosActuales = 0;   // Nos indicará la cantidad de murcielagos vivos que están actualmente
-		for(int i= 0; i < murcielagos.length;i++) {
-			if(this.murcielagos[i] != null) {
-				vivosActuales++;
-			} //Recorremos y marcamos la cantidad de vivos
-		}
-		System.out.println(vivosActuales);
-		/* La variable "faltan" nos sirve para indicar cuantos enemigos faltan en pantalla
-		 * Esto es para que se regeneren los que faltan en pantalla.
-		 */
-		
-		int faltan = cantMurcielagoPantalla - vivosActuales; 
-		
-		for (int i = 0; i < murcielagos.length; i++) {
-		    if (this.murcielagos[i] == null && faltan > 0 && cantMurcielagoGenerados < cantMurcielagoTotal) {
-		        generarMurcielago(i);
-		        faltan--;
-		        vivosActuales++;
-		    }
-		}
-
-		
+		cantMurcielagoGenerados = Funciones_utiles.actualizarMurcielagos(
+			    murcielagos,
+			    cantMurcielagoPantalla,
+			    cantMurcielagoGenerados,
+			    cantMurcielagoTotal,
+			    anchoVentana,
+			    alturaVentana,
+			    menu
+			);	
 //-------------------------------------Hechizos-----------------------------------
 /* Iniciamos el hechizo en tick ya que queremos que el objeto hechizo se mantenga fijo en el x e y del mago.
  * Es decir, que el objeto hechizo irá siempre con mago en su posicion x e y. Luego pediremos la ultima direccion
@@ -337,20 +273,52 @@ public class Juego extends InterfaceJuego
  * entonces queremos que el hechizo vaya para la derecha. Y así con todos los lados.
  */
 		//Si el hechizo no es nuevo, entonces cada vez que toco la tecla espacio, genera uno nuevo.
-		if(this.entorno.sePresiono(entorno.TECLA_ESPACIO)) {
+		if(this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
 			if(this.hechizoAgua1 == null) {
-				this.hechizoAgua1 = new Hechizos(this.mago.getX(), this.mago.getY(),this.mago.getDireccion());
+				this.hechizoAgua1 = new Hechizos(this.mago.getX(), this.mago.getY(),punteroX,punteroY);
 			}else if(this.hechizoAgua2 == null) {
-				this.hechizoAgua2 = new Hechizos(this.mago.getX(), this.mago.getY(),this.mago.getDireccion());
+				this.hechizoAgua2 = new Hechizos(this.mago.getX(), this.mago.getY(),punteroX,punteroY);
 			}else if(this.hechizoAgua3 == null) {
-				this.hechizoAgua3 = new Hechizos(this.mago.getX(), this.mago.getY(),this.mago.getDireccion());
+				this.hechizoAgua3 = new Hechizos(this.mago.getX(), this.mago.getY(),punteroX,punteroY);
 			}
 		}
 		actualizarHechizo();
 		colisionaHechizoAguaMurcielago(murcielagos);
-	}
+		
+		if (this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+			System.out.println(this.entorno.mouseX()+"/"+this.entorno.mouseY());
+			System.out.println(this.entorno.mousePresente());
+			punteroX=this.entorno.mouseX();
+			punteroY=this.entorno.mouseY();
+			Funciones_utiles.TrayectoriaHechizo(mago, punteroX, punteroY);
+
+		}
+		
+		
+		if(this.entorno.sePresionoBoton(entorno.BOTON_CENTRAL)) { //Movimiento Ascendente
+			if (tipopuntero==0) {
+				
+				System.out.println("Fuego");
+				imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero=1]); 
+			}
+			else if (tipopuntero==1) {
+				tipopuntero=2;
+				System.out.println("Hielo");
+				imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero=2]); 
+			}
+			else {
+				tipopuntero=0;
+				System.out.println("Normal");
+				imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero=0]); 
+			}
+		}
+		this.dibujarImagenPuntero(entorno, this.entorno.mouseX(),this.entorno.mouseY());	
 
 		
+	}
+
+	
+	
 	@SuppressWarnings("unused")
 	public static void main(String[] args)
 	{

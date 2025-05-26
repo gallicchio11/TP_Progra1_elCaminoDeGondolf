@@ -28,7 +28,7 @@ public class Menu {
 	}
 //	Dibujar imagen
 	public void dibujarImagenMenu(Entorno entorno) {
-		entorno.dibujarImagen(this.imagen,this.x, this.y, 0, 1.1);
+		entorno.dibujarImagen(this.imagen,this.x, this.y, 0, 3);
 	}
 	
 	
