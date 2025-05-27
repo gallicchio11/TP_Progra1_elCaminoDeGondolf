@@ -15,6 +15,10 @@ public class Juego extends InterfaceJuego
 	private Entorno entorno;
 	private Mago mago;
 	private Menu menu;
+	private PantallaFinJuego PantallaFinJuegoGana; //instanciamos las variables para los obejtos de pantalla
+	private PantallaFinJuego PantallaFinJuegoPierde;
+	int pantallaFinal;
+
 	private Roca[] rocas = {
 			new Roca(200,200,1),
 			new Roca(600,200,2),
@@ -23,22 +27,38 @@ public class Juego extends InterfaceJuego
 			new Roca(550,500,1),
 
 	};
+//	hud mago;
+	private String hudMago = ("hud_mago.png");
+	private Image imagenMago = Herramientas.cargarImagen(hudMago); 	
+
 //	private int movimiento;
 	private String [] punteroImagenes = {"puntero.png","puntero_fuego.png","puntero_hielo.png"};
 	private int tipopuntero = 2;
 	private Image imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero]); 
 
-	private Image imagenFondo = Herramientas.cargarImagen("mapa2.png"); 
+	private Image imagenFondo = Herramientas.cargarImagen("mapa2.png");
+	//imagen para la pausa del juego
+	private Image imagenPausa = Herramientas.cargarImagen("pausa.png"); 
+	boolean enPausa = false;//variable para el estado de la pausa
+
+	
 	private int cantMurcielagoPantalla = 10;
 	private int cantMurcielagoTotal = 50;
 	private int cantMurcielagoGenerados = 0;
+	public int cantMurcielagosEliminados = 0;//cantidad de murcielagos eliminados
+
 
 	private Murcielago[] murcielagos = new Murcielago[cantMurcielagoTotal]; // Declaramos un array con 50 elementos
-	private Hechizos[] hechizoAgua = new Hechizos[3]; // Declaramos Hechizos
+	private Hechizos[] hechizoAgua = new Hechizos[10]; // Declaramos Hechizos
 
-	
+	//variables para el puntero
 	private int punteroX;
 	private int punteroY;
+	
+	//variable de tiempo
+	private int tiempo =0;
+	private int enfriamientoHechizo;
+	
 	
 	// Variables y métodos propios de cada grupo
 	// ...
@@ -50,10 +70,26 @@ public class Juego extends InterfaceJuego
 	public void dibujarImagenMenu(Entorno entorno) {
 		entorno.dibujarImagen(imagenFondo,0, 0, 0, 1);
 	}
+
+//----------------Métodos propios para Hud del Mago-----------------------
+	public void dibujarImagenHudMago(Entorno entorno, int x, int y) {
+			
+		entorno.dibujarImagen(imagenMago,x, y, 0, 1);
+	}
 	//----------------Métodos propios para Puntero-----------------------
 	public void dibujarImagenPuntero(Entorno entorno, int x, int y) {
 		entorno.dibujarImagen(imagenPuntero,x, y, 0, 1);
 	}
+	//----------------Metodo de dibujo de pausa--------------------
+	public void dibujarImagenPausa(Entorno entorno) {
+	    entorno.dibujarImagen(imagenPausa, anchoVentana / 2 + 10, alturaVentana / 3, 0, 1.7);
+	}
+	//----------------Cambio de pausa--------------------------
+	public void manejarPausa() {
+	    // cambiamos el estado de pausa(NEGACIONNNNN)
+	    enPausa = !enPausa;
+	}
+
 
 //---------------Métodos propios para Colision----------------------
 	
@@ -74,11 +110,21 @@ public class Juego extends InterfaceJuego
 							this.hechizoAgua[j].limiteDerecho() > this.murcielagos[i].limiteIzquierdo()) {
 							this.murcielagos[i] = null; //Que ambos sean null
 							this.hechizoAgua[j] = null;
+							cantMurcielagosEliminados++;//aumentamos nuestro contador
 					}
 				}
 			}
 		}
 	}			
+	//--------------------------------------Murcielagos eliminados------------------
+	private boolean MurcielagosEliminados() {
+		for (int i = 0; i < murcielagos.length; i++) {
+			if (murcielagos[i] != null) {
+				return false; // si almenos hay un solo murcielago, no retorna nadfa
+			}
+		}
+		return true; // todos los murcielagos son nulos
+	}
 
 //	------------------------Generar Hechizo-----------------------
 	public void actualizarHechizo() {
@@ -99,6 +145,7 @@ public class Juego extends InterfaceJuego
 						this.hechizoAgua[i].getY() - this.hechizoAgua[i].getAltura() / 2 < 0 || // Si supera arriba
 						this.hechizoAgua[i].getY() + this.hechizoAgua[i].getAltura() / 2 > 600) { // Si supera abajo
 						this.hechizoAgua[i] = null;
+						
 				}
 			}
 		}
@@ -107,7 +154,7 @@ public class Juego extends InterfaceJuego
 	Juego()
 	{
 		// Inicializa el objeto entorno
-		
+
 		
 		this.entorno = new Entorno(this, "Proyecto para TP", anchoVentana, alturaVentana);
 		
@@ -116,7 +163,9 @@ public class Juego extends InterfaceJuego
 		this.menu = new Menu(anchoVentana,alturaVentana); //inicializamos el menu
 		this.mago = new Mago(this.menu.getAncho(),alturaVentana); //inicializamos al mago
 
-		
+		this.PantallaFinJuegoGana = new PantallaFinJuego(anchoVentana, alturaVentana, 1);
+		this.PantallaFinJuegoPierde = new PantallaFinJuego(anchoVentana, alturaVentana, 2);
+
 		
 		// Inicia el juego!
 		this.entorno.iniciar();
@@ -131,9 +180,67 @@ public class Juego extends InterfaceJuego
 	 * actualizar el estado interno del juego para simular el paso del tiempo 
 	 * (ver el enunciado del TP para mayor detalle).
 	 */
+	// Dentro de la clase Juego (por ejemplo)
 	
+	
+	//Funcion para dibujar de forma indeterminada el estado del juego en ese punto
+	private void dibujarEstadoJuego() {
+	    entorno.dibujarImagen(imagenFondo, anchoVentana / 2 + 10, alturaVentana / 2, 0, 1.7);
+
+	    for (int i = 0; i < rocas.length; i++) {
+	        if (rocas[i] != null) {
+	            rocas[i].dibujarImagenRoca(entorno);
+	        }
+	    }
+
+	    mago.dibujarImagenMago(entorno);
+
+	    for (int i = 0; i < murcielagos.length; i++) {
+	        if (murcielagos[i] != null) {
+	            murcielagos[i].dibujar(entorno);
+	        }
+	    }
+
+	    for (int i = 0; i < hechizoAgua.length; i++) {
+	        if (hechizoAgua[i] != null) {
+	            hechizoAgua[i].dibujarImagenFuego(entorno, 1);
+	        }
+	    }
+
+	    menu.dibujarImagenMenu(entorno);
+	    dibujarImagenPuntero(entorno, entorno.mouseX(), entorno.mouseY());
+		dibujarImagenHudMago(entorno, 5+this.menu.getX(), this.menu.getY()+150);
+
+	}
+
 	public void tick()
-	{
+	{	
+//---------------Condicionales para controlar el juego-PAUSA-FIN DEL JUEGO(GANAR/PERDER)
+		if (mago.estaMuerto()) //si el mago esta sin vida, mostramos pantalla fin de juego perdido
+			{
+		    dibujarEstadoJuego();
+		    PantallaFinJuegoPierde.dibujarImagenFinJuego(entorno);
+		    return;
+		}
+
+
+		if (this.entorno.sePresiono(entorno.TECLA_ESCAPE)) {//tecla escape para activar la pausa
+			System.out.println("sdsd");
+		    manejarPausa();
+		}
+		if (enPausa) {
+		    dibujarEstadoJuego();
+		    dibujarImagenPausa(entorno); //cartel de pausa (si no te gusta el cartel , lo cambio ;__;)
+		    return;
+		}
+		
+		//manejamos el tiempo con el tick ya que el tiempó no es preciso(por lo que vi,, es por los bucles internos tambien)
+		if (this.entorno.numeroDeTick() % 100 == 1) {//dividimos la cantiidad de ticks y cuanto el resto sea exactamente 1 aumenta el "tiempo"
+			System.out.println("aaa");
+			tiempo++;
+			System.out.println(tiempo);
+		}
+		
 		// Procesamiento de un instante de tiempo
 		// ...
 		
@@ -206,9 +313,9 @@ public class Juego extends InterfaceJuego
 		}
 		
 //		-----------------Colision entre Mago y Murciélago--------------------------------
-		Funciones_utiles.colisionMagoMurcielago(mago, murcielagos); // Esto va indicando si el murcielago colisiona con mago
+		 int ColisionesMurcielagos=Funciones_utiles.colisionMagoMurcielago(mago, murcielagos); // Esto va indicando si el murcielago colisiona con mago
 											  // Si es así, entonces el murcielago será null
-		
+
 //		-------------------Restablecer Murcielagos------------------------------------
 		cantMurcielagoGenerados = Funciones_utiles.actualizarMurcielagos(
 			    murcielagos, // Array de murcielagos 
@@ -264,8 +371,9 @@ public class Juego extends InterfaceJuego
 				imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero=0]); 
 			}
 		}
-		this.dibujarImagenPuntero(entorno, this.entorno.mouseX(),this.entorno.mouseY());		
-
+		this.dibujarImagenPuntero(entorno, this.entorno.mouseX(),this.entorno.mouseY());
+		//aca debera ir la barra de vida y mana , esta ira por encima del menu pero por abajo del hub mago
+		this.dibujarImagenHudMago(entorno, 5+this.menu.getX(), this.menu.getY()+150);//dibujamos el hub del mago para mostrar la interfaz
 //-----------------------Colision Mago-Murcielago = Perder vida-----------------------
 		for(int i = 0; i < murcielagos.length;i++) { // recorremos los murcielagos
 			if(this.murcielagos[i] != null) { //  Preguntamos si son distintos de null
@@ -273,12 +381,17 @@ public class Juego extends InterfaceJuego
 			} // Ademas de que el elemento murcielago sea null, el mago perderá vida
 		}
 		entorno.escribirTexto("Vidas:" + this.mago.getVida(), this.menu.getX(),this.menu.getY()); // Escribimos la vida
-		if(this.mago.estaMuerto()) { // Si el mago llega a 0 vidas se muere
-			entorno.dispose(); // Por ende cerramos el juego
+		
+		if (MurcielagosEliminados() && cantMurcielagoGenerados == cantMurcielagoTotal) 
+		{
+	    dibujarEstadoJuego();
+		PantallaFinJuegoGana.dibujarImagenFinJuego(entorno);
+	    return;
 		}
-	
+	cantMurcielagosEliminados += ColisionesMurcielagos;
+	System.out.println("murcielagos eliminados:" + cantMurcielagosEliminados);
 	}
-
+	
 	
 	
 	@SuppressWarnings("unused")
