@@ -87,7 +87,6 @@ public class Hechizos {
 		this.ancho = 20;
 		this.altura = 20;
 		this.velocidad = 10;
-		this.angulo = angulo;
 	    calcularTrayectoria(xInicio, yInicio, xDestino, yDestino);
         this.imagen = Herramientas.cargarImagen("fuego1.png");
 	}

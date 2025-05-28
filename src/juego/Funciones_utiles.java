@@ -36,7 +36,7 @@ static void seguimientoMurcielago (Mago mago, Murcielago murcielagos) {
 			    	{
 			        int distancia = (int) Math.sqrt(distanciaCuadrada); // Sigue siendo int
 	
-			        int escalaM = 5; // con la escala de movimiento definimos de cuanto sera la velocidad a la que se movera
+			        int escalaM = 2; // con la escala de movimiento definimos de cuanto sera la velocidad a la que se movera
 			        //la escala se toma como la relacion de distancia entre 2 ejes, si uno aumenta el otro tambien, por lo caul se utilizara el mismo valor, osea escalaM
 			        
 			        
@@ -160,7 +160,6 @@ public static int generarMurcielago(
 		        //System.out.println("Trayectoria hechizo");
 		        //System.out.println(vx + "/" + vy);
 				//System.out.println(anguloGrados);
-
     }
 }
 

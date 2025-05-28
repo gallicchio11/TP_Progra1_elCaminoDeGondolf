@@ -53,9 +53,6 @@ public class Mago {
     	    "caminar_derecha3.png",
     	    "caminar_derecha4.png"
     	};
-//  Variable para direccionar el disparo
-    private String direccion;
-
 
 //	Constructor
 	public Mago(int anchoMenu, int alturaVentana) {
@@ -65,7 +62,6 @@ public class Mago {
 		this.y = (alturaVentana/2) - this.altura/2; // (600/2) - (30/2) --> 300 - 15 = 285
 		this.velocidad = 5;
         this.imagen = Herramientas.cargarImagen("caminar_abajo2.png");
-        this.direccion = "abajo";
         this.vida = 10;
 
 	}
@@ -134,12 +130,8 @@ public class Mago {
 		this.imagen = imagen;
 	}
 
-	public String getDireccion() {
-		return this.direccion;
-	}
-	public void setDireccion(String dir) {
-		this.direccion = dir;
-	}
+	
+	
 	public int getVida() {
 		return vida;
 	}
@@ -222,7 +214,7 @@ public class Mago {
 	}
 //	----------- Detectar si Murio --------
 	public boolean estaMuerto() {
-		if(this.vida == 0) {
+		if(this.vida <= 0) {
 			return true;
 		}else {
 			return false;

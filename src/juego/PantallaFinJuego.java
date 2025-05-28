@@ -1,5 +1,4 @@
 package juego;
-
 import java.awt.Color;
 import java.awt.Image;
 import entorno.Entorno;
@@ -25,6 +24,14 @@ public class PantallaFinJuego {
 			this.imagenFin = Herramientas.cargarImagen("pantalla_ganaste.png");
 		} else {
 			this.imagenFin = Herramientas.cargarImagen("pantalla_perdiste.png");
+		}
+	}
+	
+	public void salirJuego(Entorno entorno) {
+		if(estadoFin == 2) {
+			if(entorno.sePresiono(entorno.TECLA_ESCAPE)) {
+				System.exit(0);
+			}
 		}
 	}
 
