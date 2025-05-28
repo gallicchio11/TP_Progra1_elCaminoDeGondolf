@@ -10,34 +10,44 @@ import entorno.Herramientas;
 public class Hechizos {
 
 //	Atributos
+	
+//	Area de Efecto
 	private int x;
 	private int y;
 	private int ancho;
 	private int altura;
-	private int velocidad;
-	private double direccion;
+	
+//	Gasto de Mana
+	private int costoMana;
+	
+//	Nombre del Hechizo
 	private String nombre;
-	private int areaDeEfecto;
-	private int costoEnergia;
-	private int tipoHechizo;
 	
+// 	Velocidad del Hechizo
+	private int velocidad;
 	
-    private int vx, vy;// variables para la velocidad de la treayectoria
+//	Direccion del Hechizo
+	private double direccion;
 
+// 	variables para la velocidad de la treayectoria
+    private int vx;
+    private int vy;
+    
+//	Imagen del Hechizo
     private Image imagen;
-  //variables de animacion para movimiento  
+    
+// 	variables de animacion para movimiento  
     private int contadorFrames = 0;
     private int velocidadFrames = 10;
     
-    //  nos determinara el fram actual del movimiento hacia la direccion
+//	Nos determinara el fram actual del movimiento hacia la direccion
     private int frameAbajo = 0;
     private int frameArriba = 0;
     private int frameIzquierda = 0;
     private int frameDerecha = 0;
-    
-	private double angulo =1;
+	private double angulo = 1;
 
-    //nuestras listas de imagenes para cada movimiento(4 direcciones de momento) 
+//	Nuestras listas de imagenes para cada movimiento(4 direcciones de momento) 
     private String[] movimientoHechizo = {//frames para abajo
     	    "fuego1.png",
     	    "fuego2.png",
@@ -81,14 +91,20 @@ public class Hechizos {
     	    "fuego8.png"
     	};
 //	Constructor
-	public Hechizos(int xInicio, int yInicio, int xDestino, int yDestino) {
-	    this.x = xInicio;
+	public Hechizos(int xInicio, int yInicio,
+					int xDestino, int yDestino, int ancho,int altura, 
+					String nombre, int costoMana, int angulo) {
+		
+		this.x = xInicio;
 	    this.y = yInicio;
-		this.ancho = 20;
-		this.altura = 20;
+	    this.ancho = ancho;
+	    this.altura = altura;
+		this.nombre = nombre;
+		this.costoMana = costoMana;
 		this.velocidad = 10;
-	    calcularTrayectoria(xInicio, yInicio, xDestino, yDestino);
+		this.angulo = angulo;
         this.imagen = Herramientas.cargarImagen("fuego1.png");
+	    calcularTrayectoria(xInicio, yInicio, xDestino, yDestino);
 	}
 	
 	private int animarMovimiento(String[] frames, int frameActual) {
@@ -149,27 +165,46 @@ public class Hechizos {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	public int getAreaDeEfecto() {
-		return areaDeEfecto;
-	}
-	public void setAreaDeEfecto(int areaDeEfecto) {
-		this.areaDeEfecto = areaDeEfecto;
-	}
-	public int getCostoEnergia() {
-		return costoEnergia;
-	}
-	public void setCostoEnergia(int costoEnergia) {
-		this.costoEnergia = costoEnergia;
+	public int getCostoMana() {
+		return costoMana;
 	}
 
-	// 	Dibujar Hechizo 
-	public void dibujar(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y,ancho, altura,0, Color.red);
+	public void setCostoMana(int costoMana) {
+		this.costoMana = costoMana;
 	}
+
+	public Image getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(Image imagen) {
+		this.imagen = imagen;
+	}
+
+// ----------------------- Tipo de Efecto ---------------------------
+	public static boolean permitirDisparar(int xPuntero, Menu menu) {
+		return xPuntero < menu.getX() - menu.getAncho() / 2;
+	}
+	
+	
+	
+	
+	// 	Dibujar Hechizo 
+	public void dibujarHielo(Entorno entorno) {
+		entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.altura,0, Color.BLUE);
+	}
+	
 	//	Dibujar imagen Hechizo
-	public void dibujarImagenFuego(Entorno entorno, int angulo) {
+	public void dibujarImagenFuego(Entorno entorno) {
 		entorno.dibujarImagen(this.imagen, this.x, this.y, this.angulo, 2);
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 //  Trayectoria Hechizo
     private void calcularTrayectoria(int xInicio, int yInicio, int xFin, int yFin) {
@@ -230,6 +265,9 @@ public class Hechizos {
         this.y += vy;
 		frameIzquierda = animarMovimiento(movimientoHechizo, frameIzquierda);//animacion derecha
     }
+    
+    
+    
 		
 //	Bordes/Limites del Hechizo
 	public int limiteSuperior() {

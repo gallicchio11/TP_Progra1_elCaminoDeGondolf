@@ -57,20 +57,23 @@ public class Juego extends InterfaceJuego
 	private Murcielago[] murcielagos = new Murcielago[cantMurcielagoTotal]; // Declaramos un array con 50 elementos
 
 	// Hechizos	
-	private Hechizos[] hechizoAgua = new Hechizos[10]; // Declaramos Hechizos
-	private Hechizos[] hechizoFuego = new Hechizos[2];
+	private Hechizos hechizoFuego ; // Declaramos Hechizos
+	private Hechizos hechizoHielo ;
+//	private Hechizos[] hechizoFuego = new Hechizos[2];
 	
 	//variables para el puntero
 	private int punteroX;
 	private int punteroY;
 	
 	//variable de tiempo
-	private int tiempo =0;
-	private int enfriamientoHechizo;
+//	private int tiempo =0;
+	private int regenerarMana;
+	private int expirarHielo;
+//	private int enfriamientoHechizo;
 	
 	// Botones
-	private Boton botonHechizoAgua;
 	private Boton botonHechizoFuego;
+	private Boton botonHechizoHielo;
 	
 	// Variables y métodos propios de cada grupo
 	// ...
@@ -117,11 +120,11 @@ public class Juego extends InterfaceJuego
 	        }
 	    }
 	    // Dibujar Hechizos		    
-	    for (int i = 0; i < hechizoAgua.length; i++) {
-	        if (hechizoAgua[i] != null) {
-	            hechizoAgua[i].dibujarImagenFuego(entorno, 1);
-	        }
-	    }
+//	    for (int i = 0; i < hechizoAgua.length; i++) {
+//	        if (hechizoAgua[i] != null) {
+//	            hechizoAgua[i].dibujarImagenFuego(entorno, 1);
+//	        }
+//	    }
 	    // Dibujar Menu	    
 	    menu.dibujarImagenMenu(entorno);
 	    // Dibujar Puntero
@@ -143,16 +146,28 @@ public class Juego extends InterfaceJuego
 
 	
 //	Colision entre Hechizo y murcielago.
-	public void colisionaHechizoAguaMurcielago(Murcielago[] murcielagos) {
-		for(int i =0; i < murcielagos.length;i++) { //recorremos los murcielagos
-			for(int j = 0; j < hechizoAgua.length;j++) {
-				if(this.murcielagos[i] != null && this.hechizoAgua[j] != null) {
-					if(this.hechizoAgua[j].limiteIzquierdo() < this.murcielagos[i].limiteDerecho() &&
-							this.hechizoAgua[j].limiteSuperior() < this.murcielagos[i].limiteInferior() &&
-							this.hechizoAgua[j].limiteInferior() > this.murcielagos[i].limiteSuperior() &&
-							this.hechizoAgua[j].limiteDerecho() > this.murcielagos[i].limiteIzquierdo()) {
+	public void colisionaHechizoMurcielago(Murcielago[] murcielagos , int n) {
+		if(n == 1) {	
+			for(int i =0; i < murcielagos.length;i++) { //recorremos los murcielagos
+					if(this.murcielagos[i] != null && this.hechizoFuego != null) {
+						if(this.hechizoFuego.limiteIzquierdo() < this.murcielagos[i].limiteDerecho() &&
+								this.hechizoFuego.limiteSuperior() < this.murcielagos[i].limiteInferior() &&
+								this.hechizoFuego.limiteInferior() > this.murcielagos[i].limiteSuperior() &&
+								this.hechizoFuego.limiteDerecho() > this.murcielagos[i].limiteIzquierdo()) {
+								this.murcielagos[i] = null; //Que ambos sean null
+								this.hechizoFuego = null;
+								cantMurcielagosEliminados++;//aumentamos nuestro contador
+					}
+				}
+			}
+		}else {
+			for(int i =0; i < murcielagos.length;i++) { //recorremos los murcielagos
+				if(this.murcielagos[i] != null && this.hechizoHielo != null) {
+					if(this.hechizoHielo.limiteIzquierdo() < this.murcielagos[i].limiteDerecho() &&
+							this.hechizoHielo.limiteSuperior() < this.murcielagos[i].limiteInferior() &&
+							this.hechizoHielo.limiteInferior() > this.murcielagos[i].limiteSuperior() &&
+							this.hechizoHielo.limiteDerecho() > this.murcielagos[i].limiteIzquierdo()) {
 							this.murcielagos[i] = null; //Que ambos sean null
-							this.hechizoAgua[j] = null;
 							cantMurcielagosEliminados++;//aumentamos nuestro contador
 					}
 				}
@@ -170,23 +185,40 @@ public class Juego extends InterfaceJuego
 	}
 
 //	-----------------------------Generar Hechizo-----------------------------------------
-	public void actualizarHechizo() {
-		/* Se verificara si los 3 hechizosAgua son diferentes de null. Si lo son, entonces se podrán
-		 * mover y dibujar. Y luego hacemos una condicion para que no supere los bordes de la pantalla
-		 * del juego. Si la bala supera los bordes del juego, entonces que el hechizo sea null. 
-		 * Para eso condicionamos SI "supera" los bordes. Por ende copiamos y pegamos 
-		 * lo que usamos en mago, y en vez de verificar si la bala está dentro de la pantalla, 
-		 * verificamos si lo supera o es igual. Si es así, será null.
-		 */
-		for(int i = 0; i < hechizoAgua.length; i++) {
-			if(this.hechizoAgua[i] != null) {
-				this.hechizoAgua[i].mover();
-				this.hechizoAgua[i].dibujarImagenFuego(entorno,1); // Para que se dibuje
-				if(this.hechizoAgua[i].getX() -this.hechizoAgua[i].getAncho() / 2 < 0 ||  // Si supera el izquierdo
-						this.hechizoAgua[i].getX() + this.hechizoAgua[i].getAncho() / 2 > menu.getX() - menu.getAncho() / 2 || // Si supera el derecho
-						this.hechizoAgua[i].getY() - this.hechizoAgua[i].getAltura() / 2 < 0 || // Si supera arriba
-						this.hechizoAgua[i].getY() + this.hechizoAgua[i].getAltura() / 2 > 600) { // Si supera abajo
-						this.hechizoAgua[i] = null;
+	public void actualizarHechizo(int n) {
+//		/* Se verificara si los 3 hechizosAgua son diferentes de null. Si lo son, entonces se podrán
+//		 * mover y dibujar. Y luego hacemos una condicion para que no supere los bordes de la pantalla
+//		 * del juego. Si la bala supera los bordes del juego, entonces que el hechizo sea null. 
+//		 * Para eso condicionamos SI "supera" los bordes. Por ende copiamos y pegamos 
+//		 * lo que usamos en mago, y en vez de verificar si la bala está dentro de la pantalla, 
+//		 * verificamos si lo supera o es igual. Si es así, será null.
+//		 */
+//		for(int i = 0; i < hechizoAgua.length; i++) {
+		if(n == 1) {	
+			if(this.hechizoFuego != null) {
+					this.hechizoFuego.mover();
+					this.hechizoFuego.dibujarImagenFuego(entorno); // Para que se dibuje
+					if(this.hechizoFuego.limiteIzquierdo() < 0 || // Si supera el izquierdo
+							this.hechizoFuego.limiteDerecho() > menu.getX() - menu.getAncho() / 2 ||  //|| // Si supera el derecho
+							this.hechizoFuego.limiteSuperior() < 0 || // Si supera arriba
+							this.hechizoFuego.limiteInferior() > alturaVentana) { // Si supera abajo
+							this.hechizoFuego = null;
+					}
+				}
+		}else {
+			if(this.hechizoHielo != null) {
+				this.hechizoHielo.dibujarHielo(entorno);
+				expirarHielo++;
+				if(this.hechizoHielo.limiteIzquierdo() < 0 || // Si supera el izquierdo
+						this.hechizoHielo.limiteDerecho() > menu.getX() - menu.getAncho() / 2 ||  //|| // Si supera el derecho
+						this.hechizoHielo.limiteSuperior() < 0 || // Si supera arriba
+						this.hechizoHielo.limiteInferior() > alturaVentana) { // Si supera abajo
+						this.hechizoHielo = null;
+						expirarHielo =0;
+				}
+				if(expirarHielo >= 180) {
+					this.hechizoHielo = null;
+					expirarHielo = 0;
 				}
 			}
 		}
@@ -207,9 +239,14 @@ public class Juego extends InterfaceJuego
 		this.PantallaFinJuegoGana = new PantallaFinJuego(anchoVentana, alturaVentana, 1); // Pantalla Juego Gana
 		this.PantallaFinJuegoPierde = new PantallaFinJuego(anchoVentana, alturaVentana, 2); // Pantalla Juego Pierde
 		
-		this.botonHechizoAgua = new Boton(766,535);
-		this.botonHechizoFuego = new Boton(823,535);
 		
+//		this.botonHechizoAgua = new Boton(766,535);
+		this.botonHechizoFuego = new Boton(766,535); // volver a 823,535
+		this.botonHechizoHielo = new Boton (823,535);
+		
+//		Mana
+		regenerarMana = 0;
+		expirarHielo = 0;
 		
 		// Inicia el juego!
 		this.entorno.iniciar();
@@ -228,6 +265,18 @@ public class Juego extends InterfaceJuego
 	
 	public void tick()
 	{	
+		
+		punteroX = entorno.mouseX();
+		punteroY = entorno.mouseY();
+		
+		regenerarMana ++;
+		if(regenerarMana >= 60) {
+			if(this.mago.getMana() < 10) {
+				this.mago.setMana(this.mago.getMana()+1);
+			}
+			regenerarMana = 0;
+		}
+		
 //---------------Condicionales para controlar el juego-PAUSA-FIN DEL JUEGO(GANAR/PERDER)
 		if (mago.estaMuerto()) { //si el mago esta sin vida, mostramos pantalla fin de juego perdido
 		    dibujarEstadoJuego();
@@ -245,12 +294,12 @@ public class Juego extends InterfaceJuego
 		}
 		
 		//manejamos el tiempo con el tick ya que el tiempó no es preciso(por lo que vi,, es por los bucles internos tambien)
-		if (this.entorno.numeroDeTick() % 100 == 1) {//dividimos la cantiidad de ticks y cuanto el resto sea exactamente 1 aumenta el "tiempo"
-//			System.out.println("aaa");
-			tiempo++;
-//			System.out.println(tiempo);
-		}
-		
+//		if (this.entorno.numeroDeTick() % 100 == 1) {//dividimos la cantiidad de ticks y cuanto el resto sea exactamente 1 aumenta el "tiempo"
+////			System.out.println("aaa");
+//			tiempo++;
+////			System.out.println(tiempo);
+//		}
+//		
 		// Procesamiento de un instante de tiempo
 		// ...
 		
@@ -337,36 +386,89 @@ public class Juego extends InterfaceJuego
  * diciendo que el elemento Hechizo a sido disparado. Si es null entonces se genera en el mismo indice
  * un nuevo elemento Hechizo.
  */
-		if(this.botonHechizoAgua.estadoActual() == true) { 
-			for(int a = 0; a < hechizoAgua.length;a++) {
-				if(this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
-					if(this.hechizoAgua[a] == null) {
-						this.hechizoAgua[a] = new Hechizos(this.mago.getX(), this.mago.getY(),punteroX,punteroY);
+//		if(this.botonHechizoAgua.estadoActual() == true) { 
+//			for(int a = 0; a < hechizoAgua.length;a++) {
+//				if(this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+//					if(this.hechizoAgua[a] == null) {
+//						this.hechizoAgua[a] = new Hechizos(this.mago.getX(), this.mago.getY(),punteroX,punteroY);
+//						this.mago.setMana(this.mago.getMana()-1);
+//					}
+//				}
+//			}
+//			actualizarHechizo();
+//			colisionaHechizoAguaMurcielago(murcielagos);
+//		}
+		
+		
+//		if(this.botonHechizoFuego.estadoActual() == true) {
+//			for(int f = 0; f < hechizoFuego.length;f++) {
+//				if(this.entorno.sePresiono(entorno.TECLA_SHIFT)) {
+//					if(this.hechizoFuego[f] == null) {
+//						this.hechizoAgua[f] = new Hechizos(this.mago.getX(), this.mago.getY(),punteroX,punteroY);
+//					}
+//				}
+//			}
+//			actualizarHechizo();
+//		}
+		
+//		Hechizo Fuego
+		if(this.botonHechizoFuego.estadoActual() == true) {
+			if(this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+				if(Hechizos.permitirDisparar(punteroX, menu)) {
+					if(this.hechizoFuego == null) {
+						this.hechizoFuego = new Hechizos(this.mago.getX(),this.mago.getY(), punteroX,punteroY, 25,25, "Fuego", 0,1);
 					}
 				}
+					
 			}
-			actualizarHechizo();
-			colisionaHechizoAguaMurcielago(murcielagos);
+			actualizarHechizo(1);
+			colisionaHechizoMurcielago(murcielagos,1);
+				
+			
 		}
 		
-		if(this.botonHechizoFuego.estadoActual() == true) {
-			for(int f = 0; f < hechizoFuego.length;f++) {
-				if(this.entorno.sePresiono(entorno.TECLA_SHIFT)) {
-					if(this.hechizoFuego[f] == null) {
-						this.hechizoAgua[f] = new Hechizos(this.mago.getX(), this.mago.getY(),punteroX,punteroY);
+//		Hechizo Hielo
+		if(this.botonHechizoHielo.estadoActual() == true) {
+			if(this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+				if(Hechizos.permitirDisparar(punteroX, menu)) {
+					if(this.hechizoHielo == null && this.mago.getMana() > 5) {
+						this.hechizoHielo = new Hechizos(punteroX,punteroY, punteroX,punteroY, 250,250, "Hielo", 5,1);
+						this.mago.setMana(this.mago.getMana() - this.hechizoHielo.getCostoMana());
+						expirarHielo = 0;
 					}
 				}
 			}
-			actualizarHechizo();
+			actualizarHechizo(2);
+			colisionaHechizoMurcielago(murcielagos,2);
+			
+			
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 //		Puntero
-		if (this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
-			punteroX=this.entorno.mouseX();
-			punteroY=this.entorno.mouseY();
-			Funciones_utiles.TrayectoriaHechizo(mago, punteroX, punteroY);
-		}
-		
+//		if (this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+//			punteroX=this.entorno.mouseX();
+//			punteroY=this.entorno.mouseY();
+//			Funciones_utiles.TrayectoriaHechizo(mago, punteroX, punteroY);
+//		}
+//		
 		if(this.entorno.sePresionoBoton(entorno.BOTON_CENTRAL)) { //Movimiento Ascendente
 			if (tipopuntero==0) {
 				
@@ -406,46 +508,73 @@ public class Juego extends InterfaceJuego
 //		System.out.println("murcielagos eliminados:" + cantMurcielagosEliminados);
 
 // -------------- INICIALIZACION DE BOTONES -------------------------
-		punteroX = entorno.mouseX();
-		punteroY = entorno.mouseY();
-		
 //		Boton para Hechizo Agua
-		if(entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
-			if(this.botonHechizoAgua.estaDentro(punteroX, punteroY)) {
-				if(this.botonHechizoAgua.estadoActual()) {
-					this.botonHechizoAgua.deseleccionar();
-				}else {
-					this.botonHechizoAgua.seleccionar();
-				}
-			}
-		}
-		// Boton para Hechizo Fuego
+//		if(entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
+//			if(this.botonHechizoAgua.estaDentro(punteroX, punteroY)) {
+//				if(this.botonHechizoAgua.estadoActual()) {
+//					this.botonHechizoAgua.deseleccionar();
+//				}else {
+//					this.botonHechizoAgua.seleccionar();
+//				}
+//			}
+//		}
+		
+//		Si ambos botones se presionan.
+		
+//		 Boton para Hechizo Fuego
 		if(entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
 			if(this.botonHechizoFuego.estaDentro(punteroX, punteroY)) {
 				if(this.botonHechizoFuego.estadoActual()) {
 					this.botonHechizoFuego.deseleccionar();
 				}else {
 					this.botonHechizoFuego.seleccionar();
+					this.botonHechizoHielo.deseleccionar();
 				}
 			}
 		}
 		
-		//Hechizo Agua estado
-		if(this.botonHechizoAgua.estadoActual()) {
-			this.botonHechizoAgua.dibujarBotonSeleccionado(entorno);
-		}else {
-			this.botonHechizoAgua.dibujarBotonDeseleccionado(entorno);
+//		Boton para Hechizo Hielo
+		if(entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
+			if(this.botonHechizoHielo.estaDentro(punteroX, punteroY)) {
+				if(this.botonHechizoHielo.estadoActual()) {
+					this.botonHechizoHielo.deseleccionar();
+				}else {
+					this.botonHechizoHielo.seleccionar();
+					this.botonHechizoFuego.deseleccionar();
+				}
+			}
 		}
 		
-		//Hechizo Fuego estado
+		
+//		Hechizo Fuego Boton izquierdo
 		if(this.botonHechizoFuego.estadoActual()) {
 			this.botonHechizoFuego.dibujarBotonSeleccionado(entorno);
 		}else {
 			this.botonHechizoFuego.dibujarBotonDeseleccionado(entorno);
 		}
 
+//		Hechizo Hielo Boton derecho
+		if(this.botonHechizoHielo.estadoActual()) {
+			this.botonHechizoHielo.dibujarBotonSeleccionado(entorno);
+		}else {
+			this.botonHechizoHielo.dibujarBotonDeseleccionado(entorno);
+		}	
+			
+		this.mago.dibujarVida(entorno, 5+this.menu.getX(), this.menu.getY()+86);
+		this.mago.dibujarMana(entorno, 5+this.menu.getX(), this.menu.getY()+100);
 	
-	
+
+		
+		
+//		Hechizo Agua estado
+//		if(this.botonHechizoAgua.estadoActual()) {
+//			this.botonHechizoAgua.dibujarBotonSeleccionado(entorno);
+//		}else {
+//			this.botonHechizoAgua.dibujarBotonDeseleccionado(entorno);
+//		}
+		
+//		Hechizo Fuego estado
+		
 	
 	}
 	

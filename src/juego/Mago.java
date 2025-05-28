@@ -13,6 +13,7 @@ public class Mago {
 	private int altura;
 	private int velocidad;
 	private int vida;
+	private int mana;
     private Image imagen;
     
     //variables de animacion para movimiento  
@@ -63,6 +64,7 @@ public class Mago {
 		this.velocidad = 5;
         this.imagen = Herramientas.cargarImagen("caminar_abajo2.png");
         this.vida = 10;
+        this.mana = 10;
 
 	}
 
@@ -129,9 +131,6 @@ public class Mago {
 	public void setImagenMago(Image imagen) {
 		this.imagen = imagen;
 	}
-
-	
-	
 	public int getVida() {
 		return vida;
 	}
@@ -139,6 +138,13 @@ public class Mago {
 	public void setVida(int vida) {
 		this.vida = vida;
 	}
+	public int getMana() {
+		return mana;
+	}
+	public void setMana(int mana) {
+		this.mana = mana;
+	}
+	
 	
 //	----------------------------------------
 	
@@ -220,5 +226,19 @@ public class Mago {
 			return false;
 		}
 	}
+	
+// ------------- Barra de Vida ------------
+	// Dibujar
+	public void dibujarVida (Entorno entorno, int x , int y) {
+		entorno.dibujarRectangulo(x, y, vida*12, 10, 0, Color.RED);
+	}
+	
+	
+	// Dibujar mana
+	public void dibujarMana (Entorno entorno, int x, int y) {
+		entorno.dibujarRectangulo(x, y, mana*12, 10, 0, Color.BLUE);
+	}
+	
+	
 
 }

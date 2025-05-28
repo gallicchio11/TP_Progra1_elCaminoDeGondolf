@@ -132,35 +132,35 @@ public static int generarMurcielago(
 		    return cantMurcielagoGenerados; // Retornamos el nuevo contador actualizado
 		}
 //Trayectoria hechizo
-	static void TrayectoriaHechizo(Mago mago, int punteroX, int punteroY) {
-
-		    int dx = mago.getX() - punteroX;
-		    int dy = mago.getY() - punteroY;
-
-		    int distanciaCuadrada = dx * dx + dy * dy; // sacamos cuadrado de X y D multiplcando sus lados y sumandolos.
-
-		    if (distanciaCuadrada > 0)// condicional para verificar que la distancia no sea 0(al ser 0 significara que el murcielago esta encima de el mago)
-		    						 //posible uso aplicable a daño recibido al mago
-		    	{
-		        int distancia = (int) Math.sqrt(distanciaCuadrada); // Sigue siendo int
-
-		        int escalaM = 5; // con la escala de movimiento definimos de cuanto sera la velocidad a la que se movera
-		        //la escala se toma como la relacion de distancia entre 2 ejes, si uno aumenta el otro tambien, por lo caul se utilizara el mismo valor, osea escalaM
-		        
-		        
-		        int vx = dx * escalaM / distancia;//normalizamos la velocidad multiplicandola por nuestra escala y dividiendola por distanciaa("hipotenusa")
-		        int vy = dy * escalaM/ distancia;//para velocidad de X e Y
-
-				double anguloRad = Math.atan2(dy, dx);                // Calcula el ángulo en radianes
-				int anguloGrados = (int) Math.round(Math.toDegrees(anguloRad)); // Lo convierte a grados y redondea
-
-		        
-		        //actualizamos la posicion de nuestro murcielago con setx/y en lugar de crear 4 condicionales para eso(UTILIZAR SETTERS Y GETTERS!!!!)
-
-		        //System.out.println("Trayectoria hechizo");
-		        //System.out.println(vx + "/" + vy);
-				//System.out.println(anguloGrados);
-    }
-}
+//	static void TrayectoriaHechizo(Mago mago, int punteroX, int punteroY) {
+//
+//		    int dx = mago.getX() - punteroX;
+//		    int dy = mago.getY() - punteroY;
+//
+//		    int distanciaCuadrada = dx * dx + dy * dy; // sacamos cuadrado de X y D multiplcando sus lados y sumandolos.
+//
+//		    if (distanciaCuadrada > 0)// condicional para verificar que la distancia no sea 0(al ser 0 significara que el murcielago esta encima de el mago)
+//		    						 //posible uso aplicable a daño recibido al mago
+//		    	{
+//		        int distancia = (int) Math.sqrt(distanciaCuadrada); // Sigue siendo int
+//
+//		        int escalaM = 5; // con la escala de movimiento definimos de cuanto sera la velocidad a la que se movera
+//		        //la escala se toma como la relacion de distancia entre 2 ejes, si uno aumenta el otro tambien, por lo caul se utilizara el mismo valor, osea escalaM
+//		        
+//		        
+//		        int vx = dx * escalaM / distancia;//normalizamos la velocidad multiplicandola por nuestra escala y dividiendola por distanciaa("hipotenusa")
+//		        int vy = dy * escalaM/ distancia;//para velocidad de X e Y
+//
+//				double anguloRad = Math.atan2(dy, dx);                // Calcula el ángulo en radianes
+//				int anguloGrados = (int) Math.round(Math.toDegrees(anguloRad)); // Lo convierte a grados y redondea
+//
+//		        
+//		        //actualizamos la posicion de nuestro murcielago con setx/y en lugar de crear 4 condicionales para eso(UTILIZAR SETTERS Y GETTERS!!!!)
+//
+//		        //System.out.println("Trayectoria hechizo");
+//		        //System.out.println(vx + "/" + vy);
+//				//System.out.println(anguloGrados);
+//    }
+//}
 
 }
