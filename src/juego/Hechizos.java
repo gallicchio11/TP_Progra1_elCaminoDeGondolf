@@ -36,64 +36,59 @@ public class Hechizos {
 //	Imagen del Hechizo
     private Image imagen;
     
+    private Image[] imagenesFuego;
+    private Image[] imagenesHielo;
+    
 // 	variables de animacion para movimiento  
     private int contadorFrames = 0;
-    private int velocidadFrames = 10;
+    private int velocidadFrames = 5;
     
 //	Nos determinara el fram actual del movimiento hacia la direccion
-    private int frameAbajo = 0;
-    private int frameArriba = 0;
-    private int frameIzquierda = 0;
-    private int frameDerecha = 0;
+    private int frame = 0;
 	private double angulo = 1;
-
-//	Nuestras listas de imagenes para cada movimiento(4 direcciones de momento) 
-    private String[] movimientoHechizo = {//frames para abajo
-    	    "fuego1.png",
-    	    "fuego2.png",
-    	    "fuego3.png",
-    	    "fuego4.png",
-    	    "fuego5.png",
-    	    "fuego6.png",
-    	    "fuego7.png",
-    	    "fuego8.png"
+// si tiene el hechizo trayectoria
+    private boolean tieneTrayectoria;
+    
+    
+// array de imagenes de hechizo Fuego 
+	private String[] movimientoHechizoFuego = {
+    	    "imagenes\\\\fuego1.png",
+    	    "imagenes\\\\fuego2.png",
+    	    "imagenes\\\\fuego3.png",
+    	    "imagenes\\\\fuego4.png",
+    	    "imagenes\\\\fuego5.png",
+    	    "imagenes\\\\fuego6.png",
+    	    "imagenes\\\\fuego7.png",
+    	    "imagenes\\\\fuego8.png"
+    	};
+	// array de imagenes de hechizo Fuego
+    private String[] movimientoHechizoHielo = {
+    	    "imagenes\\\\hielo1.png",
+    	    "imagenes\\\\hielo2.png",
+    	    "imagenes\\\\hielo3.png",
+    	    "imagenes\\\\hielo4.png",
+    	    "imagenes\\\\hielo5.png",
+    	    "imagenes\\\\hielo6.png",
+    	    "imagenes\\\\hielo7.png",
+    	    "imagenes\\\\hielo8.png",
+    	    "imagenes\\\\hielo9.png",
+    	    "imagenes\\\\hielo10.png",
+    	    "imagenes\\\\hielo11.png",
+    	    "imagenes\\\\hielo12.png",
+    	    "imagenes\\\\hielo13.png",
+    	    "imagenes\\\\hielo14.png",
+    	    "imagenes\\\\hielo15.png",
+    	    "imagenes\\\\hielo16.png",
+    	    "imagenes\\\\hielo17.png",
+    	    "imagenes\\\\hielo18.png",
+    	    "imagenes\\\\hielo19.png",
+    	    "imagenes\\\\hielo20.png"
     	};
 
-    	private String[] movimientoArribaHechizo = {//frames para arriba
-    	    "caminar_arriba1.png",
-    	    "caminar_arriba2.png",
-    	    "caminar_arriba3.png",
-    	    "caminar_arriba4.png"
-    	};
-
-    	private String[] movimientoIzquierdaHechizo = {//frames para la izquierda
-    	    "caminar_izquierda1.png",
-    	    "caminar_izquierda2.png",
-    	    "caminar_izquierda3.png",
-    	    "caminar_izquierda4.png"
-    	};
-
-    	private String[] movimientoDerechaMago = {//frames para la derecha
-    	    "caminar_derecha1.png",
-    	    "caminar_derecha2.png",
-    	    "caminar_derecha3.png",
-    	    "caminar_derecha4.png"
-    	};
-
-    private String[] DireccionBolaFuego = {//frames para abajo
-    	    "fuego1.png",
-    	    "fuego2.png",
-    	    "fuego3.png",
-    	    "fuego4.png",
-    	    "fuego5.png",
-    	    "fuego6.png",
-    	    "fuego7.png",
-    	    "fuego8.png"
-    	};
 //	Constructor
 	public Hechizos(int xInicio, int yInicio,
 					int xDestino, int yDestino, int ancho,int altura, 
-					String nombre, int costoMana, int angulo) {
+					String nombre, int costoMana, int angulo, boolean tieneTrayectoria) {
 		
 		this.x = xInicio;
 	    this.y = yInicio;
@@ -103,15 +98,40 @@ public class Hechizos {
 		this.costoMana = costoMana;
 		this.velocidad = 10;
 		this.angulo = angulo;
-        this.imagen = Herramientas.cargarImagen("fuego1.png");
-	    calcularTrayectoria(xInicio, yInicio, xDestino, yDestino);
+ 
+	    //cargamos las imagenes a nuestra clasecon "cargarImagenes" con el array de movimientoHechizo
+    	this.imagenesFuego = cargarImagenes(movimientoHechizoFuego);
+    	this.imagenesHielo = cargarImagenes(movimientoHechizoHielo);
+
+    	if (tieneTrayectoria) {
+    	    calcularTrayectoria(xInicio, yInicio, xDestino, yDestino);
+    	}
+    	//verifica que el contendido concida con la clase y le asigna las imagenes corrspondientes
+    	if (nombre.equals("Fuego")) {
+    	    this.imagen = imagenesFuego[0];
+    	} else if (nombre.equals("Hielo")) {
+    	    this.imagen = imagenesHielo[0];
+    	}
+
+	}
+	private Image[] cargarImagenes(String[] nombresImagenes) {
+		//creamos un array de imagenes con el mismo tamaño que nuestreas imagenes
+	    Image[] imagenes = new Image[nombresImagenes.length];
+	    //reccoremos el array
+	    for (int i = 0; i < nombresImagenes.length; i++) {
+	    	//cargamos cada imagen en nuestro nuevo array 
+	        imagenes[i] = Herramientas.cargarImagen(nombresImagenes[i]);
+	    }
+	    //retornamos un nuevo array con las imagenes cargadas
+	    return imagenes;
 	}
 	
-	private int animarMovimiento(String[] frames, int frameActual) {
+
+	private int animarMovimiento(Image [] frames, int frameActual) {
 	    contadorFrames++; // // aumentamos un contador de frames para generar delay entre frame y frame
 
 	    if (contadorFrames >= velocidadFrames) {// cuando llegue a 5 se aplicara el siguiente frame
-	        this.imagen = Herramientas.cargarImagen(frames[frameActual]); //cargamos el frame desde el array de imagenes "movimientoAbajoMago" 
+	        this.imagen = frames[frameActual]; //cargamos el frame desde el array de imagenes "movimientoAbajoMago" 
 	        frameActual++; // aumenta frame
 	        
 	        if (frameActual >= frames.length) {// si el Frame abajo es  mayor o igual a el tamaño total de nuestro array de frames, volvera a 0
@@ -199,6 +219,10 @@ public class Hechizos {
 		entorno.dibujarImagen(this.imagen, this.x, this.y, this.angulo, 2);
 	}
 	
+	//	Dibujar imagen Hechizo
+	public void dibujarImagenHielo(Entorno entorno) {
+		entorno.dibujarImagen(this.imagen, this.x, this.y, 0, 2);
+	}
 	
 	
 	
@@ -213,59 +237,55 @@ public class Hechizos {
         int distanciaCuadrada = dx * dx + dy * dy;
         if (distanciaCuadrada > 0) {
             int distancia = (int) Math.sqrt(distanciaCuadrada);
-            int escala = 10; // Velocidad constante
+            int escala = 10; // medida para normalizar la velocidad en los 2 ejes
             this.vx = dx * escala / distancia;
             this.vy = dy * escala / distancia;
             
-            // calculamos el angulo engrados 
-            double anguloRad = Math.atan2(dy, dx);
-            double anguloGrados = (int) Math.round(Math.toDegrees(anguloRad));
-            //evitamos que sea un resultado negativo(me cuesta encontrar una logica para calcular el angulo con un numero negativo)
-            anguloGrados = (anguloGrados + 360) % 360;  // Versión segura para evitar negativos
+	        //------CODIGO PARA ANIMACION DE SPRITES------
+	        // toma 2 puntos, calcula los grados (de rotación) entre X y el vector(dx, dy)
+	        // y pasamos los valores a condicionales para cada valor de rotar imagen
+            
+            // se calcula el ángulo en radianes desde el eje "X" y el punto definido por (dx, dy).
+            // de esta forma sacamos el angulo que representa la direccion desde el mago hacia el mouse
+            double anguloRad = Math.atan2(dy, dx); 
+            
+            // convertimos radianes a grados , lo caul nos deja valores decimales
+            double anguloEnGrados= Math.toDegrees(anguloRad);
 
-            if ((anguloGrados >= 348.75 && anguloGrados < 360) || (anguloGrados >= 0 && anguloGrados < 11.25)) {
-                direccion = 4.75; // derecha
-            } else if (anguloGrados >= 11.25 && anguloGrados < 33.75) {
-                direccion = 5.0; // derecha-arriba
-            } else if (anguloGrados >= 33.75 && anguloGrados < 56.25) {
-                direccion = 5.25; // arriba-derecha
-            } else if (anguloGrados >= 56.25 && anguloGrados < 78.75) {
-                direccion = 0.25; // casi arriba
-            } else if (anguloGrados >= 78.75 && anguloGrados < 101.25) {
-                direccion = 0; // abajo
-            } else if (anguloGrados >= 101.25 && anguloGrados < 123.75) {
-                direccion = 0.75; // Arriba-izquierda
-            } else if (anguloGrados >= 123.75 && anguloGrados < 146.25) {
-                direccion = 1.0; // izquierda-arriba
-            } else if (anguloGrados >= 146.25 && anguloGrados < 168.75) {
-                direccion = 1.25; // casi izquierda
-            } else if (anguloGrados >= 168.75 && anguloGrados < 191.25) {
-                direccion = 1.5; // izquierda
-            } else if (anguloGrados >= 191.25 && anguloGrados < 213.75) {
-                direccion = 1.75; // izquierda-abajo
-            } else if (anguloGrados >= 213.75 && anguloGrados < 236.25) {
-                direccion = 2.25; // abajo-izquierda
-            } else if (anguloGrados >= 236.25 && anguloGrados < 258.75) {
-                direccion = 2.5; // casi abajo
-            } else if (anguloGrados >= 258.75 && anguloGrados < 281.25) {
-                direccion = 3.25; // arriba
-            } else if (anguloGrados >= 281.25 && anguloGrados < 303.75) {
-                direccion = 3.75; // abajo-derecha
-            } else if (anguloGrados >= 303.75 && anguloGrados < 326.25) {
-                direccion = 4.0; // derecha-abajo
-            } else if (anguloGrados >= 326.25 && anguloGrados < 348.75) {
-                direccion = 4.5; // casi derecha
-            }
-            this.angulo = direccion; 
+            // Redondear a entero más cercano y castearlo a int
+            int anguloGrados = (int) Math.round(anguloEnGrados);
+
+            anguloGrados = (anguloGrados + 359) % 359;  //pasamos los valores en negativos(sumamos 360 a el valor "negativo", y solo lo que quede del resto sera el valor)
+            
+            // grados posibles tanteados con condicionales: 0°, 22.5°, 45°, 67.5°, 90°, 112.5°, 135°, 157.5°, 180°, 202.5°, 225°, 247.5°, 270°, 292.5°, 315°, 337.5°
+            // sumamos 11 a nuestros grados apra redondear , ya que cada sector va de 22.5 en 22.5 osea  + 11
+            // dividimos por el tamaño de nuestro sector ( / 22)
+            //redondeamos el valor y quitamos decimales obteniendo el resto %16
+            int indiceSector = ((anguloGrados + 11) / 22) % 16;
+
+            double[] direcciones = {4.75, 5.0, 5.25, 0.25, 0, 0.75, 1.0, 1.25,
+                    1.5, 1.75, 2.25, 2.5, 3.25, 3.75, 4.0, 4.5};
+
+            
+            this.direccion = direcciones[indiceSector];
+            this.angulo = direccion;
         }
     }
     
-    public void mover() {
+    public void moverFuego() {
         this.x += vx;
         this.y += vy;
-		frameIzquierda = animarMovimiento(movimientoHechizo, frameIzquierda);//animacion derecha
+        
+        frame = animarMovimiento(imagenesFuego, frame);
     }
-    
+
+    public void moverHielo() {
+        this.x += vx;
+        this.y += vy;
+        frame = animarMovimiento(imagenesHielo, frame);
+    }
+
+
     
     
 		

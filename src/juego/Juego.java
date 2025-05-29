@@ -34,19 +34,19 @@ public class Juego extends InterfaceJuego
 
 	};
 	//	Hud mago
-	private String hudMago = ("hud_mago.png");
+	private String hudMago = ("imagenes\\\\hud_mago.png");
 	private Image imagenMago = Herramientas.cargarImagen(hudMago); 	
 
 	// Puntero	
-	private String [] punteroImagenes = {"puntero.png","puntero_fuego.png","puntero_hielo.png"};
+	private String [] punteroImagenes = {"imagenes\\\\puntero.png","imagenes\\\\puntero_fuego.png","imagenes\\\\puntero_hielo.png"};
 	private int tipopuntero = 2;
 	private Image imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero]); 
 
 	// Imagen de Mapa	
-	private Image imagenFondo = Herramientas.cargarImagen("mapa2.png");
+	private Image imagenFondo = Herramientas.cargarImagen("imagenes\\\\mapa2.png");
 	
 	// Imagen para la pausa del juego
-	private Image imagenPausa = Herramientas.cargarImagen("pausa.png"); 
+	private Image imagenPausa = Herramientas.cargarImagen("imagenes\\\\pausa.png"); 
 	boolean enPausa = false;//variable para el estado de la pausa
 
 	// Murcielago	
@@ -64,7 +64,7 @@ public class Juego extends InterfaceJuego
 	//variables para el puntero
 	private int punteroX;
 	private int punteroY;
-	
+
 	//variable de tiempo
 //	private int tiempo =0;
 	private int regenerarMana;
@@ -72,8 +72,13 @@ public class Juego extends InterfaceJuego
 //	private int enfriamientoHechizo;
 	
 	// Botones
+	
 	private Boton botonHechizoFuego;
+	private Image imagenBotonHieloS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoB1.png");
+	private Image imagenBotonHieloDS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoB2.png");
 	private Boton botonHechizoHielo;
+	private Image imagenBotonFuegoS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoA1.png");
+	private Image imagenBotonFuegoDS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoA2.png");
 	
 	// Variables y métodos propios de cada grupo
 	// ...
@@ -116,9 +121,12 @@ public class Juego extends InterfaceJuego
 	    // Dibujar Murcielago
 	    for (int i = 0; i < murcielagos.length; i++) {
 	        if (murcielagos[i] != null) {
-	            murcielagos[i].dibujar(entorno);
+	        	murcielagos[i].actualizarAnimacion(this.mago.getX());
+	            murcielagos[i].dibujarImagen(entorno);
+
 	        }
 	    }
+
 	    // Dibujar Hechizos		    
 //	    for (int i = 0; i < hechizoAgua.length; i++) {
 //	        if (hechizoAgua[i] != null) {
@@ -196,7 +204,7 @@ public class Juego extends InterfaceJuego
 //		for(int i = 0; i < hechizoAgua.length; i++) {
 		if(n == 1) {	
 			if(this.hechizoFuego != null) {
-					this.hechizoFuego.mover();
+					this.hechizoFuego.moverFuego();
 					this.hechizoFuego.dibujarImagenFuego(entorno); // Para que se dibuje
 					if(this.hechizoFuego.limiteIzquierdo() < 0 || // Si supera el izquierdo
 							this.hechizoFuego.limiteDerecho() > menu.getX() - menu.getAncho() / 2 ||  //|| // Si supera el derecho
@@ -207,7 +215,8 @@ public class Juego extends InterfaceJuego
 				}
 		}else {
 			if(this.hechizoHielo != null) {
-				this.hechizoHielo.dibujarHielo(entorno);
+				this.hechizoHielo.moverHielo();
+				this.hechizoHielo.dibujarImagenHielo(entorno);
 				expirarHielo++;
 				if(this.hechizoHielo.limiteIzquierdo() < 0 || // Si supera el izquierdo
 						this.hechizoHielo.limiteDerecho() > menu.getX() - menu.getAncho() / 2 ||  //|| // Si supera el derecho
@@ -241,8 +250,8 @@ public class Juego extends InterfaceJuego
 		
 		
 //		this.botonHechizoAgua = new Boton(766,535);
-		this.botonHechizoFuego = new Boton(766,535); // volver a 823,535
-		this.botonHechizoHielo = new Boton (823,535);
+		this.botonHechizoFuego = new Boton(790,150,imagenBotonHieloS, imagenBotonHieloDS); // volver a 823,535
+		this.botonHechizoHielo = new Boton (790,250,imagenBotonFuegoS, imagenBotonFuegoDS);
 		
 //		Mana
 		regenerarMana = 0;
@@ -359,10 +368,11 @@ public class Juego extends InterfaceJuego
 				Funciones_utiles.seguimientoMurcielago(mago, murcielagos[i]); // Actualiza posición del murcielago actual
 
 			    //dibujamos posicion de murcielago actualizada
-			    this.murcielagos[i].dibujar(entorno);
+			    this.murcielagos[i].actualizarAnimacion(this.mago.getX());
+	            this.murcielagos[i].dibujarImagen(entorno);
 			}
 		}
-		
+
 //		-----------------Colision entre Mago y Murciélago--------------------------------
 		 int ColisionesMurcielagos=Funciones_utiles.colisionMagoMurcielago(mago, murcielagos); // Esto va indicando si el murcielago colisiona con mago
 											  // Si es así, entonces el murcielago será null
@@ -416,7 +426,7 @@ public class Juego extends InterfaceJuego
 			if(this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
 				if(Hechizos.permitirDisparar(punteroX, menu)) {
 					if(this.hechizoFuego == null) {
-						this.hechizoFuego = new Hechizos(this.mago.getX(),this.mago.getY(), punteroX,punteroY, 25,25, "Fuego", 0,1);
+						this.hechizoFuego = new Hechizos(this.mago.getX(),this.mago.getY(), punteroX,punteroY, 25,25, "Fuego", 0,1,true);
 					}
 				}
 					
@@ -432,7 +442,7 @@ public class Juego extends InterfaceJuego
 			if(this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
 				if(Hechizos.permitirDisparar(punteroX, menu)) {
 					if(this.hechizoHielo == null && this.mago.getMana() > 5) {
-						this.hechizoHielo = new Hechizos(punteroX,punteroY, punteroX,punteroY, 250,250, "Hielo", 5,1);
+						this.hechizoHielo = new Hechizos(punteroX,punteroY, punteroX,punteroY, 200,200, "Hielo", 5,1,false);
 						this.mago.setMana(this.mago.getMana() - this.hechizoHielo.getCostoMana());
 						expirarHielo = 0;
 					}
@@ -487,7 +497,12 @@ public class Juego extends InterfaceJuego
 			}
 		}
 		this.dibujarImagenPuntero(entorno, this.entorno.mouseX(),this.entorno.mouseY());
-		//aca debera ir la barra de vida y mana , esta ira por encima del menu pero por abajo del hub mago
+		//aca debera ir la barra de vida y mana , esta ira por encima del menu pero por abajo del hub 
+		this.mago.dibujarVida(entorno, 5+this.menu.getX(), this.menu.getY()+86);
+		this.mago.dibujarMana(entorno, 5+this.menu.getX(), this.menu.getY()+100);
+	
+
+		
 		this.dibujarImagenHudMago(entorno, 5+this.menu.getX(), this.menu.getY()+150);//dibujamos el hub del mago para mostrar la interfaz
 
 //-----------------------Colision Mago-Murcielago = Perder vida-----------------------
@@ -524,11 +539,9 @@ public class Juego extends InterfaceJuego
 //		 Boton para Hechizo Fuego
 		if(entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
 			if(this.botonHechizoFuego.estaDentro(punteroX, punteroY)) {
-				if(this.botonHechizoFuego.estadoActual()) {
-					this.botonHechizoFuego.deseleccionar();
-				}else {
-					this.botonHechizoFuego.seleccionar();
-					this.botonHechizoHielo.deseleccionar();
+				this.botonHechizoFuego.cambiarEstado();
+				if(this.botonHechizoHielo.estadoActual()) {
+					this.botonHechizoHielo.cambiarEstado();
 				}
 			}
 		}
@@ -536,11 +549,9 @@ public class Juego extends InterfaceJuego
 //		Boton para Hechizo Hielo
 		if(entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
 			if(this.botonHechizoHielo.estaDentro(punteroX, punteroY)) {
-				if(this.botonHechizoHielo.estadoActual()) {
-					this.botonHechizoHielo.deseleccionar();
-				}else {
-					this.botonHechizoHielo.seleccionar();
-					this.botonHechizoFuego.deseleccionar();
+				this.botonHechizoHielo.cambiarEstado();
+				if(this.botonHechizoFuego.estadoActual()) {
+						this.botonHechizoFuego.cambiarEstado();
 				}
 			}
 		}
@@ -548,23 +559,19 @@ public class Juego extends InterfaceJuego
 		
 //		Hechizo Fuego Boton izquierdo
 		if(this.botonHechizoFuego.estadoActual()) {
-			this.botonHechizoFuego.dibujarBotonSeleccionado(entorno);
+			this.botonHechizoFuego.dibujarnImagenBoton(entorno);
 		}else {
-			this.botonHechizoFuego.dibujarBotonDeseleccionado(entorno);
+			this.botonHechizoFuego.dibujarnImagenBoton(entorno);
 		}
 
 //		Hechizo Hielo Boton derecho
 		if(this.botonHechizoHielo.estadoActual()) {
-			this.botonHechizoHielo.dibujarBotonSeleccionado(entorno);
+			this.botonHechizoHielo.dibujarnImagenBoton(entorno);
 		}else {
-			this.botonHechizoHielo.dibujarBotonDeseleccionado(entorno);
+			this.botonHechizoHielo.dibujarnImagenBoton(entorno);
 		}	
 			
-		this.mago.dibujarVida(entorno, 5+this.menu.getX(), this.menu.getY()+86);
-		this.mago.dibujarMana(entorno, 5+this.menu.getX(), this.menu.getY()+100);
-	
 
-		
 		
 //		Hechizo Agua estado
 //		if(this.botonHechizoAgua.estadoActual()) {

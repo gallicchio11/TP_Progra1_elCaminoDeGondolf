@@ -18,7 +18,7 @@ public class Menu {
 		this.altura = alturaVentana; // 600
 		this.x = anchoVentana - this.ancho /2 ; // sería 900 - (225 /2) = 900-112.5 = 788
 		this.y = alturaVentana / 2; // sería 600/2 = 300 
-        this.imagen = Herramientas.cargarImagen("menu.png");
+        this.imagen = Herramientas.cargarImagen("imagenes\\\\menu.png");
 
 	}
 

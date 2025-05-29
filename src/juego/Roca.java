@@ -13,9 +13,9 @@ public class Roca {
 	private int rocaTipo;
     private Image imagen;
 	private String [] imagenes= {
-			("roca1.png"),
-			("roca2.png"),
-			("roca1.png"),
+			("imagenes\\\\roca1.png"),
+			("imagenes\\\\roca2.png"),
+			("imagenes\\\\roca1.png"),
 	};
 	
 //	Constructor

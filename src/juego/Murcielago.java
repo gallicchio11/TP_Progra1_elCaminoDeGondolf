@@ -1,9 +1,11 @@
 package juego;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.util.Random;
 
 import entorno.Entorno;
+import entorno.Herramientas;
 
 public class Murcielago {
 	private int x;
@@ -12,7 +14,27 @@ public class Murcielago {
 	private int altura;
 	private int velocidad;
 	private String direccion;
+	
+// variables de imagenes
+	private Image imagen;
+	private int contadorFrames = 0;
+	private int velocidadFrames = 6;
+	private int frameActual = 0;
 
+	private String[] movimientoDerechaMurcielago = {
+		"imagenes\\\\Murcielago_derecha1.png",
+		"imagenes\\\\Murcielago_derecha2.png",
+		"imagenes\\\\Murcielago_derecha3.png",
+		"imagenes\\\\Murcielago_derecha4.png"
+	};
+
+	private String[] movimientoIzquierdaMurcielago = {
+		"imagenes\\\\Murcielago_izquierda1.png",
+		"imagenes\\\\Murcielago_izquierda2.png",
+		"imagenes\\\\Murcielago_izquierda3.png",
+		"imagenes\\\\Murcielago_izquierda4.png"
+	};
+	
 //	Constructor
 	public Murcielago(int x, int y, String direccion) {
 		this.x = x;
@@ -21,6 +43,8 @@ public class Murcielago {
 		this.ancho = 20;
 		this.altura = 20;
 		this.velocidad = 1;
+		this.imagen = Herramientas.cargarImagen("imagenes\\\\Murcielago_derecha1.png");
+
 	}
 	
 //	Getters y Setters
@@ -110,11 +134,39 @@ public class Murcielago {
 	public int limiteDerecho() {
 		return this.x + this.ancho/2;
 	}
+	
+//reutilizamos logica de animar mago
+	public void actualizarAnimacion(int posicionMagoX) {
+	    String[] frames;  // nuestro array de imagenes
+		
+		if (this.x > posicionMagoX) {
+		    // si esta a la dereecha el mago, mira para la izquierda
+		frames = movimientoIzquierdaMurcielago;
+		} else {
+		    // si está a la izquierda el mago, izquierda, mira para la derecha
+		frames = movimientoDerechaMurcielago;
+		}
+
+		contadorFrames++;
+		if (contadorFrames >= velocidadFrames) {
+			this.imagen = Herramientas.cargarImagen(frames[frameActual]);
+			frameActual++;
+			if (frameActual >= frames.length) {
+			    frameActual = 0;
+			}
+	        contadorFrames = 0;  // reiniciamos los frames
+
+		}
+	}
 
 //	Dibujar
 	public void dibujar(Entorno entorno) {
 		entorno.dibujarRectangulo(this.x, this.y,ancho, altura,0, Color.YELLOW);
 	}
+	public void dibujarImagen(Entorno entorno) {
+	    entorno.dibujarImagen(this.imagen, this.x, this.y, 0,2);
+	}
+
 
 
 	

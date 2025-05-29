@@ -28,31 +28,31 @@ public class Mago {
 
     //nuestras listas de imagenes para cada movimiento(4 direcciones de momento) 
     private String[] movimientoAbajoMago = {//frames para abajo
-    	    "caminar_abajo1.png",
-    	    "caminar_abajo2.png",
-    	    "caminar_abajo3.png",
-    	    "caminar_abajo4.png"
+    	    "imagenes\\\\caminar_abajo1.png",
+    	    "imagenes\\\\caminar_abajo2.png",
+    	    "imagenes\\\\caminar_abajo3.png",
+    	    "imagenes\\\\caminar_abajo4.png"
     	};
 
     	private String[] movimientoArribaMago = {//frames para arriba
-    	    "caminar_arriba1.png",
-    	    "caminar_arriba2.png",
-    	    "caminar_arriba3.png",
-    	    "caminar_arriba4.png"
+    	    "imagenes\\\\caminar_arriba1.png",
+    	    "imagenes\\\\caminar_arriba2.png",
+    	    "imagenes\\\\caminar_arriba3.png",
+    	    "imagenes\\\\caminar_arriba4.png"
     	};
 
     	private String[] movimientoIzquierdaMago = {//frames para la izquierda
-    	    "caminar_izquierda1.png",
-    	    "caminar_izquierda2.png",
-    	    "caminar_izquierda3.png",
-    	    "caminar_izquierda4.png"
+    	    "imagenes\\\\caminar_izquierda1.png",
+    	    "imagenes\\\\caminar_izquierda2.png",
+    	    "imagenes\\\\caminar_izquierda3.png",
+    	    "imagenes\\\\caminar_izquierda4.png"
     	};
 
     	private String[] movimientoDerechaMago = {//frames para la derecha
-    	    "caminar_derecha1.png",
-    	    "caminar_derecha2.png",
-    	    "caminar_derecha3.png",
-    	    "caminar_derecha4.png"
+    	    "imagenes\\\\caminar_derecha1.png",
+    	    "imagenes\\\\caminar_derecha2.png",
+    	    "imagenes\\\\caminar_derecha3.png",
+    	    "imagenes\\\\caminar_derecha4.png"
     	};
 
 //	Constructor
@@ -62,7 +62,7 @@ public class Mago {
 		this.x = anchoMenu + anchoMenu/2 ; // 225 + 112.5 = 338 aprox
 		this.y = (alturaVentana/2) - this.altura/2; // (600/2) - (30/2) --> 300 - 15 = 285
 		this.velocidad = 5;
-        this.imagen = Herramientas.cargarImagen("caminar_abajo2.png");
+        this.imagen = Herramientas.cargarImagen("imagenes\\\\caminar_abajo2.png");
         this.vida = 10;
         this.mana = 10;
 
@@ -78,7 +78,7 @@ public class Mago {
 	        this.imagen = Herramientas.cargarImagen(frames[frameActual]); //cargamos el frame desde el array de imagenes "movimientoAbajoMago" 
 	        frameActual++; // aumenta frame
 
-	        if (frameActual >= frames.length) {// si el Frame abajo es  mayor o igual a el tamaño total de nuestro array de frames, volvera a 0
+	        if (frameActual >= frames.length) {// si el Frame es  mayor o igual a el tamaño total de nuestro array de frames, volvera a 0
 	            frameActual = 0; // reiniciamos nuestro frame actual para volver al inicio(un bucle)
 	        }
 

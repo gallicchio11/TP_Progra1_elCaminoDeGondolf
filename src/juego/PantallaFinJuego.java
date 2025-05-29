@@ -21,9 +21,9 @@ public class PantallaFinJuego {
 		this.estadoFin = finDeJuego;
 
 		if (estadoFin == 1) {
-			this.imagenFin = Herramientas.cargarImagen("pantalla_ganaste.png");
+			this.imagenFin = Herramientas.cargarImagen("imagenes\\\\pantalla_ganaste.png");
 		} else {
-			this.imagenFin = Herramientas.cargarImagen("pantalla_perdiste.png");
+			this.imagenFin = Herramientas.cargarImagen("imagenes\\\\pantalla_perdiste.png");
 		}
 	}
 	

@@ -10,16 +10,21 @@ public class Boton {
 	private int y;
 	private int ancho;
 	private int altura;
-	private Image imagen;
+	private Image imagenS;
+    private Image imagenDS;
+
 	private Boolean seleccionado;
 
 //	Constructor
-	public Boton(int x, int y) {
+	public Boton(int x, int y,Image imagenA,Image imagenB ) {
 		this.x = x;
 		this.y = y;
 		this.ancho = 32;
 		this.altura = 32;
 		this.seleccionado = false;
+		this.imagenS = imagenA;
+		this.imagenDS = imagenB;
+
 	}
 	
 // Booleano para saber si el Mouse está dentro del boton
@@ -40,7 +45,9 @@ public class Boton {
 	public boolean estadoActual() {
 		return this.seleccionado;
 	}
-
+	public void cambiarEstado() {
+	    this.seleccionado = !this.seleccionado;
+	}
 
 //	Dibujar boton
 	public void dibujarBotonSeleccionado(Entorno entorno) {
@@ -49,7 +56,15 @@ public class Boton {
 	public void dibujarBotonDeseleccionado(Entorno entorno) {
 		entorno.dibujarRectangulo(x, y, ancho, altura,0, Color.RED);
 	}
-	
+
+	public void dibujarnImagenBoton(Entorno entorno) {
+		if(this.estadoActual()){
+			entorno.dibujarImagen(this.imagenDS, this.x, this.y, 0, 2.5);
+		}
+		else {
+			entorno.dibujarImagen(this.imagenS, this.x, this.y, 0, 2.7);
+		}
+	}
 //	Getters y Setters
 	public int getX() {
 		return x;
