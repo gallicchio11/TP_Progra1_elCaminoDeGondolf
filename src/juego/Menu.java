@@ -74,4 +74,5 @@ public class Menu {
 	public boolean hechizoFuego() {
 		return true;
 	}
+
 }

@@ -48,13 +48,15 @@ public class Juego extends InterfaceJuego
 	// Imagen para la pausa del juego
 	private Image imagenPausa = Herramientas.cargarImagen("imagenes\\\\pausa.png"); 
 	boolean enPausa = false;//variable para el estado de la pausa
-
+	boolean esperaEnter = true;
+	
 	// Murcielago	
 	private int cantMurcielagoPantalla = 10;
 	private int cantMurcielagoTotal = 50;
 	private int cantMurcielagoGenerados = 0;
 	public int cantMurcielagosEliminados = 0;//cantidad de murcielagos eliminados
 	private Murcielago[] murcielagos = new Murcielago[cantMurcielagoTotal]; // Declaramos un array con 50 elementos
+	private int velocidadMurcielago = 2;
 
 	// Hechizos	
 	private Hechizos hechizoFuego ; // Declaramos Hechizos
@@ -71,17 +73,16 @@ public class Juego extends InterfaceJuego
 	private int expirarHielo;
 //	private int enfriamientoHechizo;
 	
+	private int numeroRonda = 1;
+
 	// Botones
-	
+	//S = seleccionado - DS = deseleccionado
 	private Boton botonHechizoFuego;
 	private Image imagenBotonHieloS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoB1.png");
 	private Image imagenBotonHieloDS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoB2.png");
 	private Boton botonHechizoHielo;
 	private Image imagenBotonFuegoS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoA1.png");
 	private Image imagenBotonFuegoDS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoA2.png");
-	
-	// Variables y métodos propios de cada grupo
-	// ...
 
 //----------------Métodos propios para Menu-----------------------
 //	public void dibujarImagenMenu(Entorno entorno) {
@@ -105,9 +106,13 @@ public class Juego extends InterfaceJuego
 	    // cambiamos el estado de pausa(NEGACIONNNNN)
 	    enPausa = !enPausa;
 	}
+	public void esperaEnter() {
+		//lo utilizamos cada vez que qeuramos que el juagdor presione enter
+		esperaEnter = !esperaEnter;
+	}
 	
-	// ----- Funcion para Dibujar lo que está dentro del juego
-	private void dibujarEstadoJuego() {
+	// ----- Funcion para Dibujar lo que está dentro del juego de forma pausada(solo recibe como verdadero el booleano "textoinicio" para esperar la tecla "enter")
+	public void dibujarEstadoJuego(boolean textoinicio) {
 	    entorno.dibujarImagen(imagenFondo, anchoVentana / 2 + 10, alturaVentana / 2, 0, 1.7);
 	    // Dibujamos rocas
 	    for (int i = 0; i < rocas.length; i++) {
@@ -123,7 +128,6 @@ public class Juego extends InterfaceJuego
 	        if (murcielagos[i] != null) {
 	        	murcielagos[i].actualizarAnimacion(this.mago.getX());
 	            murcielagos[i].dibujarImagen(entorno);
-
 	        }
 	    }
 
@@ -139,11 +143,33 @@ public class Juego extends InterfaceJuego
 	    dibujarImagenPuntero(entorno, entorno.mouseX(), entorno.mouseY());
 	    // Dibujar Hud Del mago
 		dibujarImagenHudMago(entorno, 5+this.menu.getX(), this.menu.getY()+150);
+		
+		if (textoinicio) {
+			entorno.escribirTexto("PRESIONE ENTER PARA INICIAR", this.menu.getX()-80,this.mago.getY()); // escribimos nuestro texto de presione enter
+
+		}
+
 	}
 
 	
-	
+	public void rondaSiguiente(boolean activar) {
+	    if (activar) {
+	        // Aumentar la dificultad
+	        this.cantMurcielagoPantalla += 5; // aummentamos la cantidad de murcielagos en pantalla
+	        this.cantMurcielagoTotal += 10; // aumentamos la cantidad total en la ronda
+	        this.velocidadMurcielago += 1; // aumentamos la velocidad de los murciélagos
+	        								//MAYOR DIFICULTAD
 
+	        // reiniciamos nuestro contador de generados y eliminados
+	        this.cantMurcielagoGenerados = 0;
+	        this.cantMurcielagosEliminados = 0;
+
+	        // Crear un nuevo array de murciélagos con la nueva cantidad total
+	        this.murcielagos = new Murcielago[this.cantMurcielagoTotal];
+	        this.numeroRonda++;
+
+	    }
+	}
 
 //---------------Métodos propios para Colision----------------------
 	
@@ -231,10 +257,24 @@ public class Juego extends InterfaceJuego
 				}
 			}
 		}
+		
 	}
-
+	public void PresionarEnter(boolean enter) {
+		if(enter) {
+			return;
+		}
+		else {
+			enPausa = true;
+			System.out.println("ENTER");
+		}
+	}
 	Juego()
-	{
+	{	
+		if (enPausa) {
+		    dibujarEstadoJuego(false);
+		    dibujarImagenPausa(entorno); //cartel de pausa (si no te gusta el cartel , lo cambio ;__;)
+		    return;
+		}
 		// Inicializa el objeto entorno
 
 		
@@ -250,7 +290,7 @@ public class Juego extends InterfaceJuego
 		
 		
 //		this.botonHechizoAgua = new Boton(766,535);
-		this.botonHechizoFuego = new Boton(790,150,imagenBotonHieloS, imagenBotonHieloDS); // volver a 823,535
+		this.botonHechizoFuego = new Boton(790,150,imagenBotonHieloS, imagenBotonHieloDS); //
 		this.botonHechizoHielo = new Boton (790,250,imagenBotonFuegoS, imagenBotonFuegoDS);
 		
 //		Mana
@@ -273,7 +313,7 @@ public class Juego extends InterfaceJuego
 	// Dentro de la clase Juego (por ejemplo)
 	
 	public void tick()
-	{	
+	{			
 		
 		punteroX = entorno.mouseX();
 		punteroY = entorno.mouseY();
@@ -286,19 +326,29 @@ public class Juego extends InterfaceJuego
 			regenerarMana = 0;
 		}
 		
-//---------------Condicionales para controlar el juego-PAUSA-FIN DEL JUEGO(GANAR/PERDER)
+//---------------Condicionales para controlar el juego-PAUSA-FIN DEL JUEGO(GANAR/PERDER)-RONDAS
 		if (mago.estaMuerto()) { //si el mago esta sin vida, mostramos pantalla fin de juego perdido
-		    dibujarEstadoJuego();
+		    dibujarEstadoJuego(false);
 		    PantallaFinJuegoPierde.dibujarImagenFinJuego(entorno);
 			return;
 		}
 		if (this.entorno.sePresiono(entorno.TECLA_ESPACIO)) {//tecla escape para activar la pausa
 //			System.out.println("sdsd");
 		    manejarPausa();
+		
 		}
 		if (enPausa) {
-		    dibujarEstadoJuego();
+		    dibujarEstadoJuego(false);
 		    dibujarImagenPausa(entorno); //cartel de pausa (si no te gusta el cartel , lo cambio ;__;)
+		    return;
+		}
+		if (this.entorno.sePresiono(entorno.TECLA_ENTER) && esperaEnter==true) {//tecla e
+//			System.out.println("sdsd");
+		    esperaEnter();
+		}
+		if (esperaEnter) {
+			
+		    dibujarEstadoJuego(true);//el unico que tendra true en dibujarEstadoJuego para mostrar una imagen de espera de tecla o texto
 		    return;
 		}
 		
@@ -385,7 +435,9 @@ public class Juego extends InterfaceJuego
 			    cantMurcielagoTotal, // cantidad total
 			    anchoVentana, // ancho de ventana del juego
 			    alturaVentana, // alto de ventana del juego
-			    menu // Y el propio menú
+			    velocidadMurcielago,
+			    menu, // Y el propio menú
+			    numeroRonda//valor de nuestra ronda
 			);	
 //-------------------------------------Hechizos-----------------------------------
 /* Iniciamos el hechizo en tick ya que queremos que el objeto Hechizo inicie desde la posicion X e Y del mago;
@@ -426,7 +478,8 @@ public class Juego extends InterfaceJuego
 			if(this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
 				if(Hechizos.permitirDisparar(punteroX, menu)) {
 					if(this.hechizoFuego == null) {
-						this.hechizoFuego = new Hechizos(this.mago.getX(),this.mago.getY(), punteroX,punteroY, 25,25, "Fuego", 0,1,true);
+						this.hechizoFuego = new Hechizos(this.mago.getX(),this.mago.getY(), punteroX,punteroY, 25,25, "Fuego", 1,1,true);
+						this.mago.setMana(this.mago.getMana() - this.hechizoFuego.getCostoMana());
 					}
 				}
 					
@@ -442,7 +495,7 @@ public class Juego extends InterfaceJuego
 			if(this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
 				if(Hechizos.permitirDisparar(punteroX, menu)) {
 					if(this.hechizoHielo == null && this.mago.getMana() > 5) {
-						this.hechizoHielo = new Hechizos(punteroX,punteroY, punteroX,punteroY, 200,200, "Hielo", 5,1,false);
+						this.hechizoHielo = new Hechizos(punteroX,punteroY, punteroX,punteroY, 200,200, "Hielo", 7,1,false);
 						this.mago.setMana(this.mago.getMana() - this.hechizoHielo.getCostoMana());
 						expirarHielo = 0;
 					}
@@ -456,22 +509,6 @@ public class Juego extends InterfaceJuego
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 //		Puntero
 //		if (this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
 //			punteroX=this.entorno.mouseX();
@@ -479,13 +516,12 @@ public class Juego extends InterfaceJuego
 //			Funciones_utiles.TrayectoriaHechizo(mago, punteroX, punteroY);
 //		}
 //		
-		if(this.entorno.sePresionoBoton(entorno.BOTON_CENTRAL)) { //Movimiento Ascendente
-			if (tipopuntero==0) {
+			if (this.botonHechizoFuego.estadoActual()) {
 				
 //				System.out.println("Fuego");
 				imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero=1]); 
 			}
-			else if (tipopuntero==1) {
+			else if (this.botonHechizoFuego.estadoActual()) {
 				tipopuntero=2;
 //				System.out.println("Hielo");
 				imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero=2]); 
@@ -495,7 +531,7 @@ public class Juego extends InterfaceJuego
 //				System.out.println("Normal");
 				imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero=0]); 
 			}
-		}
+		
 		this.dibujarImagenPuntero(entorno, this.entorno.mouseX(),this.entorno.mouseY());
 		//aca debera ir la barra de vida y mana , esta ira por encima del menu pero por abajo del hub 
 		this.mago.dibujarVida(entorno, 5+this.menu.getX(), this.menu.getY()+86);
@@ -511,13 +547,21 @@ public class Juego extends InterfaceJuego
 				Funciones_utiles.colisionMagoMurcielago(mago, murcielagos); // nos vamos a la colision
 			} // Ademas de que el elemento murcielago sea null, el mago perderá vida
 		}
-		entorno.escribirTexto("Vidas:" + this.mago.getVida(), this.menu.getX(),this.menu.getY()); // Escribimos la vida
-		
+		entorno.escribirTexto("Vidas:" + this.mago.getVida(), this.menu.getX(),this.menu.getY()); // escribimos la vida
+        entorno.escribirTexto("Ronda: " + this.numeroRonda, this.menu.getX(), this.menu.getY() + 20);//mostramos la ronda actual
+
 		if (MurcielagosEliminados() && cantMurcielagoGenerados == cantMurcielagoTotal) 
 		{
-	    dibujarEstadoJuego();
-		PantallaFinJuegoGana.dibujarImagenFinJuego(entorno);
-	    return;
+			if (numeroRonda==2) {//indicamos la ronda final
+				dibujarEstadoJuego(false);
+				PantallaFinJuegoGana.dibujarImagenFinJuego(entorno);
+			    return;
+			}
+			else {
+				// si no es la ronda final, aumenta la dificultad
+				rondaSiguiente(true);
+			}
+			
 		}
 		cantMurcielagosEliminados += ColisionesMurcielagos;
 //		System.out.println("murcielagos eliminados:" + cantMurcielagosEliminados);

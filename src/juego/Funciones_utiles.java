@@ -50,8 +50,45 @@ static void seguimientoMurcielago (Mago mago, Murcielago murcielagos) {
 			  }
 	    }
 	}
+///-------------------------------Obtener imagenes----------------------------------------
 
-	
+//Funcion para obtener las imagenes de los enemigos dependiendo del numero de ronda para cada enemigo correspondiente, al pasar de ronda se actualiza el sprite
+//esta recibe el numero de ronda como parametro y retorna un array de enemigos 
+public static String[] obtenerSpritesDerechaPorRonda(int ronda) {
+    if (ronda >= 2) {
+        return new String[]{
+            "imagenes\\\\ojobatDerecha1.png",
+            "imagenes\\\\ojobatDerecha2.png",
+            "imagenes\\\\ojobatDerecha3.png",
+            "imagenes\\\\ojobatDerecha4.png"
+        };
+    } else {
+        return new String[]{
+            "imagenes\\\\Murcielago_derecha1.png",
+            "imagenes\\\\Murcielago_derecha2.png",
+            "imagenes\\\\Murcielago_derecha3.png",
+            "imagenes\\\\Murcielago_derecha4.png"
+        };
+    }
+}
+
+public static String[] obtenerSpritesIzquierdaPorRonda(int ronda) {
+    if (ronda >= 2) {
+        return new String[]{
+            "imagenes\\\\ojobatIzquierda1.png",
+            "imagenes\\\\ojobatIzquierda2.png",
+            "imagenes\\\\ojobatIzquierda3.png",
+            "imagenes\\\\ojobatIzquierda4.png"
+        };
+    } else {
+        return new String[]{
+            "imagenes\\\\Murcielago_izquierda1.png",
+            "imagenes\\\\Murcielago_izquierda2.png",
+            "imagenes\\\\Murcielago_izquierda3.png",
+            "imagenes\\\\Murcielago_izquierda4.png"
+        };
+    }
+}
 ///-------------------------------cantidad murcielagos----------------------------------------
 public static int generarMurcielago(
 	    int k,
@@ -60,6 +97,9 @@ public static int generarMurcielago(
 	    int cantMurcielagoTotal,
 	    int anchoVentana,
 	    int alturaVentana,
+	    int velocidad,
+	    String [] framesDerecha, // ahora al generar murcielagos es encesario agregar los sprites correspoondientes
+	    String [] framesIzquierda,
 	    Menu menu
 	) {
 	    if (cantMurcielagoGenerados >= cantMurcielagoTotal) {
@@ -70,6 +110,7 @@ public static int generarMurcielago(
 	    int borde = random.nextInt(4);
 	    int x = 0;
 	    int y = 0;
+	   
 	    String direccion = "";
 
 	    if (borde == 0) { // Lado izquierdo
@@ -90,7 +131,7 @@ public static int generarMurcielago(
 	        direccion = "abajo";
 	    }
 
-	    murcielagos[k] = new Murcielago(x, y, direccion);
+	    murcielagos[k] = new Murcielago(x, y, direccion,velocidad, framesDerecha, framesIzquierda);//los nuevos murcielagos recibiran el sprite correspondiente a la ronda
 	    return cantMurcielagoGenerados + 1; // Incremento la cantidad generada
 	}
 
@@ -102,8 +143,14 @@ public static int generarMurcielago(
 			int cantMurcielagoTotal,
 			int anchoVentana,
 			int alturaVentana,
-			Menu menu
+			int velocidad,
+			Menu menu,
+			int ronda // el numero de ronda es necesario ya que se lo pasara como parametro a "generarMurcielago"
+			
 		) {
+			//llamamos a obtenerSprites para cada lado con su valor ronda para el enemigo
+			String[] framesIzquierda = obtenerSpritesIzquierdaPorRonda(ronda);
+			String[] framesDerecha = obtenerSpritesDerechaPorRonda(ronda);
 		    // -------------------Restablecer Murcielagos------------------------------------
 		    int vivosActuales = 0;   // Nos indicará la cantidad de murcielagos vivos que están actualmente
 		    for (int i = 0; i < murcielagos.length; i++) {
@@ -122,7 +169,7 @@ public static int generarMurcielago(
 		        if (murcielagos[i] == null && faltan > 0 && cantMurcielagoGenerados < cantMurcielagoTotal) {
 		            cantMurcielagoGenerados = Funciones_utiles.generarMurcielago(
 		                i, murcielagos, cantMurcielagoGenerados, cantMurcielagoTotal,
-		                anchoVentana, alturaVentana, menu
+		                anchoVentana, alturaVentana, velocidad,framesDerecha, framesIzquierda, menu
 		            );
 		            faltan--;
 		            vivosActuales++;

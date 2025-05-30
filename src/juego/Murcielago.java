@@ -21,29 +21,25 @@ public class Murcielago {
 	private int velocidadFrames = 6;
 	private int frameActual = 0;
 
-	private String[] movimientoDerechaMurcielago = {
-		"imagenes\\\\Murcielago_derecha1.png",
-		"imagenes\\\\Murcielago_derecha2.png",
-		"imagenes\\\\Murcielago_derecha3.png",
-		"imagenes\\\\Murcielago_derecha4.png"
-	};
-
-	private String[] movimientoIzquierdaMurcielago = {
-		"imagenes\\\\Murcielago_izquierda1.png",
-		"imagenes\\\\Murcielago_izquierda2.png",
-		"imagenes\\\\Murcielago_izquierda3.png",
-		"imagenes\\\\Murcielago_izquierda4.png"
-	};
-	
+	private String[] movimientoDerechaMurcielago ;
+ String[] movimientoIzquierdaMurcielago;
 //	Constructor
-	public Murcielago(int x, int y, String direccion) {
+	public Murcielago(int x, int y, String direccion, int velocidad,  String[] framesDerecha, String[] framesIzquierda) {
 		this.x = x;
 		this.y = y;
 		this.direccion = direccion;
 		this.ancho = 20;
 		this.altura = 20;
-		this.velocidad = 1;
-		this.imagen = Herramientas.cargarImagen("imagenes\\\\Murcielago_derecha1.png");
+		this.velocidad = velocidad;
+		
+		//definimos para nuestro murcielago los array bde frames para cada lado
+		this.movimientoIzquierdaMurcielago = framesIzquierda;
+		this.movimientoDerechaMurcielago = framesDerecha;
+
+		//cargamos las imagenes rercibidas para cada lado
+		this.imagen = Herramientas.cargarImagen(framesDerecha[0]);
+		this.imagen = Herramientas.cargarImagen(framesIzquierda[0]);
+
 
 	}
 	
@@ -99,10 +95,7 @@ public class Murcielago {
 		}else { //Si se encuentran abajo, se moveran arriba
 			this.y = y - velocidad;
 		}
-		
 	}
-	
-	
 	public void moverDerecha() { 
 		this.x = x + velocidad;
 	}
@@ -120,7 +113,6 @@ public class Murcielago {
 			moverAbajo();	
 		}
 	}
-	
 //	Bordes/Limites del murciélago
 	public int limiteSuperior() {
 		return this.y - this.altura/2 ;
@@ -158,18 +150,10 @@ public class Murcielago {
 
 		}
 	}
-
-//	Dibujar
-	public void dibujar(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y,ancho, altura,0, Color.YELLOW);
-	}
+	
+	//metodo de dibujo para el murcielago
 	public void dibujarImagen(Entorno entorno) {
 	    entorno.dibujarImagen(this.imagen, this.x, this.y, 0,2);
 	}
 
-
-
-	
-//colisiones murcielago 
-	
 }
