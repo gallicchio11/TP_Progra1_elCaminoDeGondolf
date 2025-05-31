@@ -1,18 +1,19 @@
 package juego;
-import java.awt.Color;
 import java.awt.Image;
 import entorno.Entorno;
 import entorno.Herramientas;
 
-//clase que utilzaremos para mostrar el final del juego, si el jugador gana o pierde.
+// Clase que utilzaremos para mostrar el final del juego, si el jugador gana o pierde.
 public class PantallaFinJuego {
+	// ATRIBUTOS
 	private int x;
 	private int y;
 	private int ancho;
 	private int altura;
 	private Image imagenFin;
 	private int estadoFin;
-
+	
+	// Constructor
 	public PantallaFinJuego(int anchoVentana, int alturaVentana, int finDeJuego) {
 		this.ancho = anchoVentana;
 		this.altura = alturaVentana;
@@ -27,6 +28,7 @@ public class PantallaFinJuego {
 		}
 	}
 	
+	// Para salir del Juego
 	public void salirJuego(Entorno entorno) {
 		if(estadoFin == 2) {
 			if(entorno.sePresiono(entorno.TECLA_ESCAPE)) {
@@ -34,7 +36,8 @@ public class PantallaFinJuego {
 			}
 		}
 	}
-
+	
+	// Dibujamos la imagen del Fin Juego
 	public void dibujarImagenFinJuego(Entorno entorno) {
 		entorno.dibujarImagen(this.imagenFin, this.x, this.y, 0, 1.5);
 	}

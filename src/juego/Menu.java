@@ -1,11 +1,11 @@
 package juego;
 import java.awt.Color;
 import java.awt.Image;
-
 import entorno.Entorno;
 import entorno.Herramientas;
 
 public class Menu {
+	// ATRIBUTOS
 	private int x;
 	private int y;
 	private int ancho;
@@ -19,60 +19,43 @@ public class Menu {
 		this.x = anchoVentana - this.ancho /2 ; // sería 900 - (225 /2) = 900-112.5 = 788
 		this.y = alturaVentana / 2; // sería 600/2 = 300 
         this.imagen = Herramientas.cargarImagen("imagenes\\\\menu.png");
-
 	}
-
-//	Dibujar
-	public void dibujar(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.altura,0, Color.red);
-	}
+	
 //	Dibujar imagen
 	public void dibujarImagenMenu(Entorno entorno) {
 		entorno.dibujarImagen(this.imagen,this.x, this.y, 0, 3);
 	}
-	
-	
-	
-//	Getters y Setters
+
+//-------------------------- GETTERS Y SETTERS ------------------------
+	// X
 	public int getX() {
 		return x;
 	}
-
 	public void setX(int x) {
 		this.x = x;
 	}
-
+	
+	// Y
 	public int getY() {
 		return y;
 	}
-
 	public void setY(int y) {
 		this.y = y;
 	}
-
+	
+	// Altura
 	public int getAltura() {
 		return altura;
 	}
-
 	public void setAltura(int altura) {
 		this.altura = altura;
 	}
-
+	
+	// Ancho
 	public int getAncho() {
 		return ancho;
 	}
-
 	public void setAncho(int ancho) {
 		this.ancho = ancho;
 	}
-//	Boton Hechizo agua
-	public boolean hechizoAgua() {
-		return true;
-	}
-	
-//	Boton Hechizo fuego
-	public boolean hechizoFuego() {
-		return true;
-	}
-
 }

@@ -1,11 +1,9 @@
 package juego;
-import java.awt.Color;
 import java.awt.Image;
 import entorno.Entorno;
-import entorno.Herramientas;
 
 public class Boton {
-//	Atributos
+	// ATRIBUTOS
 	private int x;
 	private int y;
 	private int ancho;
@@ -15,19 +13,18 @@ public class Boton {
 
 	private Boolean seleccionado;
 
-//	Constructor
+	// Constructor
 	public Boton(int x, int y,Image imagenA,Image imagenB ) {
 		this.x = x;
 		this.y = y;
-		this.ancho = 32;
-		this.altura = 32;
+		this.ancho = 120;
+		this.altura = 67;
 		this.seleccionado = false;
 		this.imagenS = imagenA;
 		this.imagenDS = imagenB;
-
 	}
 	
-// Booleano para saber si el Mouse está dentro del boton
+	// Funcion para saber si el Mouse está dentro del botón
 	public boolean estaDentro(int mouseX, int mouseY) {
 		return mouseX >= x - ancho / 2 && 
 			   mouseX <= x + ancho / 2 &&
@@ -35,13 +32,7 @@ public class Boton {
 			   mouseY <= y + altura / 2;
 	}
 	
-	public void seleccionar() {
-		this.seleccionado = true;		
-	}
-
-	public void deseleccionar() {
-		this.seleccionado = false;
-	}
+//-------------------------- ESTADO DEL BOTÓN -----------------------
 	public boolean estadoActual() {
 		return this.seleccionado;
 	}
@@ -49,14 +40,7 @@ public class Boton {
 	    this.seleccionado = !this.seleccionado;
 	}
 
-//	Dibujar boton
-	public void dibujarBotonSeleccionado(Entorno entorno) {
-		entorno.dibujarRectangulo(x, y, ancho, altura, 0, Color.GREEN);
-	}
-	public void dibujarBotonDeseleccionado(Entorno entorno) {
-		entorno.dibujarRectangulo(x, y, ancho, altura,0, Color.RED);
-	}
-
+//-------------------- DIBUJAR IMAGEN DEL BOTÓN -----------------------------
 	public void dibujarnImagenBoton(Entorno entorno) {
 		if(this.estadoActual()){
 			entorno.dibujarImagen(this.imagenDS, this.x, this.y, 0, 2.5);
@@ -65,38 +49,4 @@ public class Boton {
 			entorno.dibujarImagen(this.imagenS, this.x, this.y, 0, 2.7);
 		}
 	}
-//	Getters y Setters
-	public int getX() {
-		return x;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	public int getAncho() {
-		return ancho;
-	}
-
-	public void setAncho(int ancho) {
-		this.ancho = ancho;
-	}
-
-	public int getAltura() {
-		return altura;
-	}
-
-	public void setAltura(int altura) {
-		this.altura = altura;
-	}
-	
-
 }

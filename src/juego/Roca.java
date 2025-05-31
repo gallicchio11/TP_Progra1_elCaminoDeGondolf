@@ -1,16 +1,14 @@
 package juego;
-import java.awt.Color;
 import entorno.Entorno;
-
 import java.awt.Image;
 import entorno.Herramientas;
 
 public class Roca {
+	// ATRIBUTOS
 	private int x;
 	private int y;
 	private int ancho;
 	private int altura;
-	private int rocaTipo;
     private Image imagen;
 	private String [] imagenes= {
 			("imagenes\\\\roca1.png"),
@@ -24,60 +22,15 @@ public class Roca {
 		this.y = y;
 		this.ancho = 50;
 		this.altura = 50;
-		this.rocaTipo  = tipo;
         this.imagen = Herramientas.cargarImagen(imagenes[tipo]);
-
 	}
 	
-//-------------Getters y Setters-----------------
-	public int getX() {
-		return x;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	public int getAncho() {
-		return ancho;
-	}
-
-	public void setAncho(int ancho) {
-		this.ancho = ancho;
-	}
-
-	public int getAltura() {
-		return altura;
-	}
-
-	public void setAltura(int altura) {
-		this.altura = altura;
-	}
-    public int getTipo() {
-        return rocaTipo;
-    }
-
-    public String getNombreImagen() {
-            return imagenes[this.rocaTipo];
- 
-    }
-
-
-
-//	Dibujar imagen
+	// Dibujar imagen
 	public void dibujarImagenRoca(Entorno entorno) {
 		entorno.dibujarImagen(this.imagen, this.x, this.y, 0, 3.5);
 	}
 	
-//	Bordes/limites de la Roca
+//---------------------- BORDES DE LAS ROCAS -----------------------
 	public int limiteSuperior() {
 		return this.y - this.altura/2 ;
 	}
@@ -89,6 +42,5 @@ public class Roca {
 	}
 	public int limiteDerecho() {
 		return this.x + this.ancho/2;
-	}
-	
+	}	
 }
