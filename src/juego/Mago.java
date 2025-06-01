@@ -62,7 +62,7 @@ public class Mago {
 		this.y = (alturaVentana/2) - this.altura/2; // (600/2) - (30/2) --> 300 - 15 = 285
 		this.velocidad = 5;
         this.imagen = Herramientas.cargarImagen("imagenes\\\\caminar_abajo2.png");
-        this.vida = 10000;
+        this.vida = 10;
         this.mana = 10;
 	}
 
@@ -118,7 +118,6 @@ public class Mago {
 	public void setAltura(int altura) {
 		this.altura = altura;
 	}
-
 	// Vida
 	public int getVida() {
 		return vida;

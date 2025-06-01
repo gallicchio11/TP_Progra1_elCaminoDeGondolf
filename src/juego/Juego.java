@@ -1,19 +1,21 @@
 package juego;
+import java.awt.Color;
 import java.awt.Image;
 import java.util.Random;
 import java.awt.Image;
+
 import entorno.Entorno;
 import entorno.Herramientas;
 import entorno.InterfaceJuego;
 
-public class Juego extends InterfaceJuego{	
-	// El objeto Entorno que controla el tiempo y otros
+public class Juego extends InterfaceJuego
+{	// El objeto Entorno que controla el tiempo y otros
 	
 	// Necesario del Juego
 	private int anchoVentana= 900;
 	private int alturaVentana= 600;
 	private Entorno entorno;
-	
+
 	// Mago
 	private Mago mago;
 	
@@ -23,7 +25,6 @@ public class Juego extends InterfaceJuego{
 	// Instanciamos las variables para los objetos de pantalla
 	private PantallaFinJuego PantallaFinJuegoGana;  // Pantalla de ganar
 	private PantallaFinJuego PantallaFinJuegoPierde; // Pantalla de perder
-//	int pantallaFinal; preguntar a Agustin
 	
 	// Rocas	
 	private Roca[] rocas = {
@@ -32,9 +33,9 @@ public class Juego extends InterfaceJuego{
 			new Roca(350,100,0),
 			new Roca(200,400,2),
 			new Roca(550,500,1),
+
 	};
-	
-	//	Hud mago
+	// Hud mago
 	private String hudMago = ("imagenes\\\\hud_mago.png");
 	private Image imagenMago = Herramientas.cargarImagen(hudMago); 	
 
@@ -57,8 +58,9 @@ public class Juego extends InterfaceJuego{
 	private int cantMurcielagoGenerados = 0;
 	public int cantMurcielagosEliminados = 0; // Cantidad de murcielagos eliminados
 	private Murcielago[] murcielagos = new Murcielago[cantMurcielagoTotal]; // Declaramos un array con 50 elementos
-	private int velocidadMurcielago = 2; // preguntar a Agustin
-
+	private int velocidadMurcielago = 2; // Velocidad de murcielagos
+	private int puntajeMurcielagos = 0;
+ 
 	// Hechizos	
 	private Hechizos hechizoFuego ; // Declaramos Hechizo Fuego
 	private Hechizos hechizoHielo ; // Declaramos Hechizo Hielo
@@ -68,65 +70,56 @@ public class Juego extends InterfaceJuego{
 	private int punteroY;
 
 	// Variable de tiempo
-//	private int tiempo =0;
+	private int tiempo =0;
+    private int tiempoInicio = -1;
+    private boolean temporizadorEjecutado = false;
+    private int tiempoFinal;
+	boolean salircarga1 = false;
+	boolean salircarga2 = false;
+	private Image imagenRonda1 = Herramientas.cargarImagen("imagenes\\\\ronda1.png"); ;
+	private Image imagenRonda2 = Herramientas.cargarImagen("imagenes\\\\ronda2.png"); ;
 	private int regenerarMana;
 	private int expirarHielo;
-//	private int enfriamientoHechizo;
 	
-	// Variables de Ronda
-	private int numeroRonda = 1;
+	private int numeroRonda = 1;// Variable del numero de ronda
 
 	// Botones
 	//S = seleccionado - DS = deseleccionado
-	private Boton botonHechizoFuego; // Boton del Hechizo Fuego
+	private Boton botonHechizoFuego;
 	private Image imagenBotonHieloS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoB1.png");
 	private Image imagenBotonHieloDS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoB2.png");
-	private Boton botonHechizoHielo; // Boton del Hechizo Hielo
+	private Boton botonHechizoHielo;
 	private Image imagenBotonFuegoS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoA1.png");
 	private Image imagenBotonFuegoDS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoA2.png");
 
-//----------------Métodos propios para Menu-----------------------
-//	public void dibujarImagenMenu(Entorno entorno) {
-//		entorno.dibujarImagen(imagenFondo,0, 0, 0, 1);
-//	}
 
-//---------------- Métodos propios para Hud del Mago -----------------------
+	//----------------Métodos propios para Hud del Mago-----------------------
 	public void dibujarImagenHudMago(Entorno entorno, int x, int y) {		
 		entorno.dibujarImagen(imagenMago,x, y, 0, 1);
 	}
-	
-//------------------ Métodos propios para Puntero -----------------------
+	//----------------Métodos propios para Puntero-----------------------
 	public void dibujarImagenPuntero(Entorno entorno, int x, int y) {
 		entorno.dibujarImagen(imagenPuntero,x, y, 0, 1);
 	}
-	
-//-------------------- Métodos de dibujo de pausa --------------------
+	//----------------Metodo de dibujo de pausa--------------------
 	public void dibujarImagenPausa(Entorno entorno) {
 	    entorno.dibujarImagen(imagenPausa, anchoVentana / 2 + 10, alturaVentana / 3, 0, 1.7);
 	}
-//------------------------- Cambio de pausa --------------------------
-	public void manejarPausa() {
-	    enPausa = !enPausa; // Cambiamos el estado con negación
-	}
+	//
 	public void esperaEnter() {
-		esperaEnter = !esperaEnter; // Lo utilizamos para que el jugador presione enter
+		esperaEnter = !esperaEnter;// Lo utilizamos para que el jugador presione enter
 	}
 	
-//	------------------------ Funcion de estado del Juego ------------------------------------
-	/*  Funcion para Dibujar lo que está dentro del juego de forma pausada
-	 * (solo recibe como verdadero el booleano "textoinicio" para esperar la tecla "enter")
-	 */
-	
-	public void dibujarEstadoJuego(boolean textoinicio) {
+//	------------------------ Funcion de estado del Juego ------------------------------------(Se retiro parametro enter para texto)
+
+	public void dibujarEstadoJuego() {
 	    entorno.dibujarImagen(imagenFondo, anchoVentana / 2 + 10, alturaVentana / 2, 0, 1.7);
-	    
 	    // Dibujamos rocas
 	    for (int i = 0; i < rocas.length; i++) {
 	        if (rocas[i] != null) {
 	            rocas[i].dibujarImagenRoca(entorno);
 	        }
 	    }
-	    
 	    // Dibujar Mago
 	    this.mago.dibujarImagenMago(entorno);
 	    
@@ -137,43 +130,26 @@ public class Juego extends InterfaceJuego{
 	            murcielagos[i].dibujarImagen(entorno);
 	        }
 	    }
-	    
-	    // Dibujar Menu	    
-	    menu.dibujarImagenMenu(entorno);
-	    
-	    // Dibujar Puntero
-	    dibujarImagenPuntero(entorno, entorno.mouseX(), entorno.mouseY());
-	    
-	    // Dibujar Hud Del mago
-		dibujarImagenHudMago(entorno, 5+this.menu.getX(), this.menu.getY()+150);
-		
-		// Texto para decir que presione enter para jugar
-		if (textoinicio) {
-			entorno.escribirTexto("PRESIONE ENTER PARA INICIAR", this.menu.getX()-80,this.mago.getY()); 
-		}
 	}
-
-//----------------------- Funcion para indicar la ronda siguiente ---------------------
-	public void rondaSiguiente(boolean activar) { // preguntar a agustin
+//	------------------------ Funcion para aumentar la dificultad de la siguiente ronda ------------------------------------
+	public void rondaSiguiente(boolean activar) {// Si recibe true como parametro, ejecutara la siguiente ronda(Se puede modificar)
 	    if (activar) {
-	    	
 	        // Aumentar la dificultad
-	        this.cantMurcielagoPantalla += 5; // aummentamos la cantidad de murcielagos en pantalla
-	        this.cantMurcielagoTotal += 10; // aumentamos la cantidad total en la ronda
-	        this.velocidadMurcielago += 1; // aumentamos la velocidad de los murciélagos
-
-	        // reiniciamos nuestro contador de generados y eliminados
+	        this.cantMurcielagoPantalla += 5; // Aummentamos la cantidad de murcielagos en pantalla
+	        this.cantMurcielagoTotal += 10; // Aumentamos la cantidad total en la ronda
+	        this.velocidadMurcielago += 1; // Aumentamos la velocidad de los murciélagos
+	        								//Mayor  "DIFICULTAD"
+	        // Reiniciamos nuestro contador de generados y eliminados(y guardamos nuestro puntaje de enemigos eliminados)
+			this.puntajeMurcielagos += cantMurcielagosEliminados ; // Acumulador para el puntaje de enemigos por pantalla
 	        this.cantMurcielagoGenerados = 0;
 	        this.cantMurcielagosEliminados = 0;
-
-	        // Crear un nuevo array de murciélagos con la nueva cantidad total
+	        // Generamos un nuevo array de murciélagos con la nueva cantidad total
 	        this.murcielagos = new Murcielago[this.cantMurcielagoTotal];
 	        this.numeroRonda++;
 	    }
 	}
+//---------------Métodos propios para Colision----------------------
 
-//--------------------- Métodos propios para Colision --------------------------------
-	
 //	Colision entre Hechizo y murcielago.
 	public void colisionaHechizoMurcielago(Murcielago[] murcielagos , int n) {
 		if(n == 1) { // Si es 1, hablamos de Hechizo Fuego
@@ -202,24 +178,22 @@ public class Juego extends InterfaceJuego{
 				}
 			}
 		}
-	}
-	
+	}		
 //	----------------- Murcielagos eliminados Total -----------------------
 	private boolean MurcielagosEliminados() {
 		for (int i = 0; i < murcielagos.length; i++) {
 			if (murcielagos[i] != null) {
-				return false; // si almenos hay un solo murcielago, no retorna nadfa
+				return false; // Si almenos hay un solo murcielago, no retorna nadfa
 			}
 		}
 		return true; // todos los murcielagos son nulos
 	}
-
+	
 //	-----------------------------Generar Hechizo-----------------------------------------
 	public void actualizarHechizo(int n) {
 		if(n == 1) { // Si hablamos de Hechizo Fuego
 			if(this.hechizoFuego != null) {
 				this.hechizoFuego.moverFuego();
-				this.hechizoFuego.dibujarImagenFuego(entorno); // Para que se dibuje
 				if(this.hechizoFuego.limiteIzquierdo() < 0 || // Si supera el izquierdo
 					this.hechizoFuego.limiteDerecho() > menu.getX() - menu.getAncho() / 2 ||  //|| // Si supera el derecho
 					this.hechizoFuego.limiteSuperior() < 0 || // Si supera arriba
@@ -230,7 +204,6 @@ public class Juego extends InterfaceJuego{
 		}else { // Si hablamos de Hechizo Hielo
 			if(this.hechizoHielo != null) {
 				this.hechizoHielo.moverHielo();
-				this.hechizoHielo.dibujarImagenHielo(entorno);
 				expirarHielo++;
 				if(this.hechizoHielo.limiteIzquierdo() < 0 || // Si supera el izquierdo
 					this.hechizoHielo.limiteDerecho() > menu.getX() - menu.getAncho() / 2 ||  //|| // Si supera el derecho
@@ -246,7 +219,6 @@ public class Juego extends InterfaceJuego{
 			}
 		}
 	}
-	
 //	Para indicar si se presiono enter
 	public void PresionarEnter(boolean enter) {
 		if(enter) {
@@ -257,15 +229,340 @@ public class Juego extends InterfaceJuego{
 			System.out.println("ENTER");
 		}
 	}
-	
-	Juego() {
+	//----------------Cambio de pausa--------------------------
+	private boolean manejarPausa() {
+	    if (this.entorno.sePresiono(entorno.TECLA_ESPACIO)) {
+	        enPausa = !enPausa;
+	    }
+	    if (enPausa) {
+	        dibujarEstadoJuego();
+	        dibujarImagenPausa(entorno);
+		    return true;
+
+	    }
+	    return false;
+	}	
+	private void actualizarMovimientoMago() {
+		//------------------- Movimiento y Colision Mago-Rocas --------------------
+				if(this.entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) { //Movimiento izquierdo
+					if(mago.getX() - mago.getAncho() / 2 > 0 ) {
+						this.mago.moverIzquierda();
+						if(this.mago.colisionaMagoRoca(rocas)) {
+							this.mago.moverDerecha();
+						}
+					}
+				}
+				if(this.entorno.estaPresionada(entorno.TECLA_DERECHA)) { //Movimiento Derecho
+					if(mago.getX() + mago.getAncho() / 2 < menu.getX() - menu.getAncho() / 2) {
+						this.mago.moverDerecha();
+						if(this.mago.colisionaMagoRoca(rocas)) {
+							this.mago.moverIzquierda();
+					        
+						}
+					}
+				}
+				if(this.entorno.estaPresionada(entorno.TECLA_ARRIBA)) { //Movimiento Ascendente
+					if(mago.getY() - mago.getAltura() / 2 > 0) {
+						this.mago.moverArriba();
+						if(this.mago.colisionaMagoRoca(rocas)) {
+							this.mago.moverAbajo();
+						}
+					}
+				}
+				if(this.entorno.estaPresionada(entorno.TECLA_ABAJO)) { //Movimiento Descendente
+					if(mago.getY() + mago.getAltura() / 2 < 600 ) {
+						this.mago.moverAbajo();
+						if(this.mago.colisionaMagoRoca(rocas)) {
+							this.mago.moverArriba();
+						}
+					}
+				}	
+			
 		
-		if (enPausa) {
-		    dibujarEstadoJuego(false);
-		    dibujarImagenPausa(entorno); // Cartel de pausa (si no te gusta el cartel , lo cambio ;__;)
-		    return;
+	}
+	//------------------------Metodo para procesar los Hechizos-----------------------------------
+	//Indica si el Hechizo se lanzo, si colisiono o si debera volverse null
+	private void procesarHechizos() {
+		//-------------------------------------Hechizos-----------------------------------
+
+	    // Hechizo Fuego
+	    if (this.botonHechizoFuego.estadoActual()) {
+	        if (this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+	            if (Hechizos.permitirDisparar(punteroX, menu)) {
+	                if (this.hechizoFuego == null) {
+	                    this.hechizoFuego = new Hechizos(mago.getX(), mago.getY(), punteroX, punteroY, 25, 25, "Fuego", 1, 1, true);
+	                    this.mago.setMana(mago.getMana() - this.hechizoFuego.getCostoMana());
+	                }
+	            }
+	        }
+	    }
+
+	    // Hechizo Hielo
+	    if (this.botonHechizoHielo.estadoActual()) {
+	        if (this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+	            if (Hechizos.permitirDisparar(punteroX, menu)) {
+	                if (this.hechizoHielo == null && this.mago.getMana() > 5) {
+	                    this.hechizoHielo = new Hechizos(punteroX, punteroY, punteroX, punteroY, 200, 200, "Hielo", 7, 1, false);
+	                    this.mago.setMana(mago.getMana() - hechizoHielo.getCostoMana());
+	                    expirarHielo = 0;
+	                }
+	            }
+	        }
+
+	    }
+	    //Sacamos estos metodos de los condicionales, ya que si los dejamos dentro de estos
+	    //Al lanzar un hechizo y deselecionar el boton de este, el hechizo se congela
+        actualizarHechizo(2);
+        colisionaHechizoMurcielago(murcielagos, 2);
+        actualizarHechizo(1);
+        colisionaHechizoMurcielago(murcielagos, 1);
+	}
+	//------------------------Metodo para generar una espera-----------------------------------
+    public boolean esperarTiempo(int tiempoEspera, int tiempoActual) {
+    	if (temporizadorEjecutado){	// Variable para que no se vuelva a aplicar la funcion a no ser que la reiniciemos
+    								// Reiniciar definido mas abajo
+			return false;
 		}
+        if (tiempoInicio == -1) { 
+            tiempoInicio = tiempoActual; // Se guarda el tiempo cuando se llama por primera vez
+        }
+        //Si mi "tiempoActual" es mayor o igual a el "tiempoInicio"  + el tiempo esperado "tiempoEspera" retornara true
+        if (tiempoActual >= tiempoInicio + tiempoEspera) {
+        	temporizadorEjecutado = true;
+            return true; 
+        }
+
+        return false; // Si no se cumplio el tiempo, sigue pasando el tiempo sin pasar por el primer condicional
+    }
+    //-----------------------Metodo para reiniciar "esperarTiempo"-------------------------------------
+    public void reiniciar() {
+        //reinicia tiempo inicio a -1  y el booleano para ejecutar el temporizador
+        tiempoInicio = -1;
+        temporizadorEjecutado = false;
+        
+    }
+    //-----------------------Metodo para detener el tiempo interno del juego-----------------------------
+    public boolean pararTiempo() {
+		if (this.mago.estaMuerto()) {//si termina el juego, retornamos true para detener el tiempo para mostrarlo al jugador
+			return true;
+		}
+		return false;
+	}
+    //-----------------------Metodo especifico para dibujar los hechizos-------------------------------------
+    private void dibujarHechizos() {
+        if (this.hechizoFuego != null) {
+            this.hechizoFuego.dibujarImagenFuego(entorno);
+        }
+        if (this.hechizoHielo != null) {
+            this.hechizoHielo.dibujarImagenHielo(entorno);
+        }
+    }
+    //-----------------------METODO PARA DIBUJAR INTERFAZ DEL JUEGO-----------------------------------------------
+	private void dibujarUI() {
+		  
+		this.menu.dibujarImagenMenu(entorno); //Dibujamos el menú
 		
+		this.mago.dibujarVida(entorno, 5+this.menu.getX(), this.menu.getY()+86); // Dibujamos la vida del Mago
+		this.mago.dibujarMana(entorno, 5+this.menu.getX(), this.menu.getY()+100);// Dibujamos el manadel Mago
+		this.dibujarImagenHudMago(entorno, 5+this.menu.getX(), this.menu.getY()+150);// Dibujamos el Hud del Mago
+
+        entorno.cambiarFont("Arial", 22, Color.BLACK);// Le cambiamos la fuente por una mas estetica
+        entorno.escribirTexto("Ronda: " + this.numeroRonda, this.menu.getX()-40, this.menu.getY() + 20);//Mostramos la ronda actual en el Menu
+        
+        entorno.cambiarFont("Arial", 18, Color.BLACK);// Le cambiamos la fuente por una mas estetica
+        entorno.escribirTexto("" + cantMurcielagosEliminados, this.menu.getX()+ 20, this.menu.getY() + 70);//Mostramos los murcielagos eliminados por pantallas de todas las rondas
+
+     // Dibujar el boton del Hechizo Fuego
+ 		if(this.botonHechizoFuego.estadoActual()) {
+ 			this.botonHechizoFuego.dibujarnImagenBoton(entorno);
+ 		}else {
+ 			this.botonHechizoFuego.dibujarnImagenBoton(entorno);
+ 		}
+
+     // Dibujar el boton del Hechizo Hielo
+ 		if(this.botonHechizoHielo.estadoActual()) {
+ 			this.botonHechizoHielo.dibujarnImagenBoton(entorno);
+ 		}else {
+ 			this.botonHechizoHielo.dibujarnImagenBoton(entorno);
+ 		}	
+ 	 // Dibujar Puntero
+	    dibujarImagenPuntero(entorno, entorno.mouseX(), entorno.mouseY());
+
+	}
+	//---------------Funcion para el control del juego-PAUSA-FIN DEL JUEGO(GANAR/PERDER)-RONDAS
+	private void controlarFinDeJuego() {
+		tiempoFinal=tiempo;
+		if (mago.estaMuerto()) { //si el mago esta sin vida, mostramos pantalla fin de juego perdido
+		    dibujarEstadoJuego();
+		    PantallaFinJuegoPierde.dibujarImagenFinJuego(entorno);
+	        entorno.cambiarFont("Arial", 38, Color.BLACK);// Le cambiamos la fuente por una mas estetica
+	        this.entorno.escribirTexto("" + tiempoFinal, this.PantallaFinJuegoGana.getX()+ 200, this.PantallaFinJuegoGana.getY() - 30);//Mostramos los murcielagos eliminados por pantallas de todas las rondas
+			return;
+		}
+		//--------------------------------------- RONDA ---------------------------------------------------
+	    if (MurcielagosEliminados() && cantMurcielagoGenerados == cantMurcielagoTotal) {
+			if (numeroRonda==2) {//indicamos la ronda final
+	            dibujarEstadoJuego();
+	            PantallaFinJuegoGana.dibujarImagenFinJuego(entorno);
+	        } else {
+				rondaSiguiente(true); // Si no es la ronda final, aumenta la dificultad
+	        }
+	    }
+	}
+	//------------------- Pantallas de Carga Entre Ronda y Ronda --------------------
+	private boolean manejarPantallasDeCarga() {
+	    if (numeroRonda == 1 && !salircarga1) {
+	        if (esperarTiempo(3, tiempo)) {// Tiempo de finalizacion de pantalla de carga
+	            salircarga1 = true;
+	            reiniciar();
+	        } else {
+	            dibujarEstadoJuego();
+	            this.entorno.dibujarImagen(imagenRonda1, anchoVentana / 2 + 10, alturaVentana / 2, 0, 1.7);
+	            return true; // Sigue mostrando pantalla de carga
+	        }
+	    }
+
+	    if (numeroRonda == 2 && !salircarga2) {
+	        if (esperarTiempo(3, tiempo)) {
+	            salircarga2 = true;
+	        } else {
+	        	dibujarEstadoJuego();
+	            this.entorno.dibujarImagen(imagenRonda2, anchoVentana / 2 + 10, alturaVentana / 2, 0, 1.7);
+	            return true; // Sigue mostrando pantalla de carga
+	        }
+	    }
+
+	    return false; // No hay pantalla de carga activa
+	}
+	//----------------------------------------- PUNTERO Y HUD -------------------------------------------
+	private void actualizarPuntero() {// Puntero "Fuego"
+	    if (botonHechizoFuego.estadoActual()) {
+	        imagenPuntero = Herramientas.cargarImagen(punteroImagenes[1]); 
+	        tipopuntero = 1;
+	    } else if (botonHechizoHielo.estadoActual()) {// Puntero "Hielo"
+	        imagenPuntero = Herramientas.cargarImagen(punteroImagenes[2]); 
+	        tipopuntero = 2;
+	    } else {// Puntero normal
+	        imagenPuntero = Herramientas.cargarImagen(punteroImagenes[0]); 
+	        tipopuntero = 0;
+	    }
+	}
+	//----------------------------------------- PUNTERO Y HUD -------------------------------------------
+	private void manejarEntradas() {//Metodo para verificar cuando se presionaron los botones del Mouse
+		// Obtenemos los valores del punteroX y el PunteroY propios del mouse
+	    punteroX = entorno.mouseX();
+	    punteroY = entorno.mouseY();
+	    
+	    if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {//Condicional al levantar el Boton
+	    	
+	        if (botonHechizoFuego.estaDentro(punteroX, punteroY)) {//Si esta dentro del area del boton(Boton Fuego)
+	            botonHechizoFuego.cambiarEstado();
+	            if (botonHechizoHielo.estadoActual()) botonHechizoHielo.cambiarEstado();
+	        } else if (botonHechizoHielo.estaDentro(punteroX, punteroY)) {//Si esta dentro del area del boton(Boton Hielo)
+	            botonHechizoHielo.cambiarEstado();
+	            if (botonHechizoFuego.estadoActual()) botonHechizoFuego.cambiarEstado();
+	        }
+	    }
+
+	    actualizarPuntero();//llamamos a nuestro metodo para modificar el puntero
+	}
+	//----------------------------------------- TIEMPO DEL JUEGO -------------------------------------------
+	private void actualizarTiempo() {
+		//manejamos el tiempo con el tick ya que el tiempó no es preciso(por lo que vi,, es por los bucles internos tambien)
+		if(this.entorno.numeroDeTick() % 100 == 1 && !pararTiempo()) {// Dividimos la cantidad de ticks y cuanto el resto sea exactamente 1 aumenta el "tiempo"
+			tiempo++;
+			System.out.println(tiempo);
+		}
+	}
+	//----------------------------------------- METODO PARA DIBUJAR EL ESTADO ACTUAL DEL MURCIELAGO-------------------------------------------
+	private void dibujarEstadoMurcielago() {
+		//	--------------------------Persecusión Murcielago------------------------------
+			for (int i = 0; i < murcielagos.length; i++) {
+				if(this.murcielagos[i] != null) { // Si el murcielago es diferente de null, lo persigue
+					Funciones_utiles.seguimientoMurcielago(mago, murcielagos[i]); // Actualiza posición del murcielago actual
+
+				    this.murcielagos[i].actualizarAnimacion(this.mago.getX()); // Actualizamos la animacion del murcielago
+		            this.murcielagos[i].dibujarImagen(entorno); // Dibujamos al Murcielago
+				}
+			}
+	}
+	//----------------------------------------- METODO PARA DIBUJAR EL ENTORNO DEL JUEGO-------------------------------------------
+	 private void dibujarEscena() {
+			this.entorno.dibujarImagen(imagenFondo, anchoVentana / 2 + 10, alturaVentana / 2, 0, 1.7);
+
+			//------------------------------ Mago --------------------------
+					this.mago.dibujarImagenMago(entorno); //dibujamos al mago											
+			//------------------------------ Menu --------------------------
+					this.menu.dibujarImagenMenu(entorno); //Dibujamos el menú			
+		
+			//------------------------------ Rocas --------------------------
+					for (int i = 0; i < rocas.length;i++) { //Dibujamos a las Rocas
+						rocas[i].dibujarImagenRoca(entorno);	
+					}
+			//------------------------------ Murcielagos--------------------------
+					dibujarEstadoMurcielago();
+			//------------------------------ Interfaz de Usuario--------------------------
+					dibujarUI();
+			//------------------------------ Hechizos--------------------------
+					dibujarHechizos();
+				
+	}
+	 //----------------------------------------- METODO PARA VERIFICAR QUE TERMINO EL JUEGO-------------------------------------------
+	private void verificarFinJuego() {
+		//-----------------Condicion para finalizar la Ronda/Juego------------------------
+		if (MurcielagosEliminados() && cantMurcielagoGenerados == cantMurcielagoTotal) 
+		{
+			if (numeroRonda==2) {//Indicamos la ronda final
+				puntajeMurcielagos += cantMurcielagosEliminados;
+				dibujarEstadoJuego();
+				PantallaFinJuegoGana.dibujarImagenFinJuego(entorno);
+			    return;
+			}
+			else {
+				rondaSiguiente(true); // Si no es la ronda final, aumenta la dificultad
+			}	
+		}
+	}
+	 //-----------------------------------------PROCESA TODA LA LOGICA DE LOS MURCIELAGOS-------------------------------------------
+	 //Esto realiza: Colision de Mago/murcielago, Actualiza posicion y Estado Murcielago, Generacion de Murcielagos, Contador total
+	private void procesarMurcielagos() {
+			//-----------------Colision entre Mago y Murciélago--------------------------------
+			int ColisionesMurcielagos=Funciones_utiles.colisionMagoMurcielago(mago, murcielagos); // Esto va indicando si el murcielago colisiona con mago
+		 	// Si es así, entonces el murcielago será null
+		 	//		-------------------Restablecer Murcielagos------------------------------------
+			cantMurcielagoGenerados = Funciones_utiles.actualizarMurcielagos(
+				    murcielagos, // Array de murcielagos 
+				    cantMurcielagoPantalla, // Cantidad en pantalla 
+				    cantMurcielagoGenerados, // Cantidad de generados
+				    cantMurcielagoTotal, // Cantidad total
+				    anchoVentana, // Ancho de ventana del juego
+				    alturaVentana, // Alto de ventana del juego
+				    velocidadMurcielago, // Velocidad de murcielago
+				    menu, // Y el propio menú
+				    numeroRonda//valor de nuestra ronda
+				);	
+
+			//-----------------Colision entre Mago y Murciélago = Perder vida------------------------
+			for(int i = 0; i < murcielagos.length;i++) { // recorremos los murcielagos
+				if(this.murcielagos[i] != null) { //  Preguntamos si son distintos de null
+					Funciones_utiles.colisionMagoMurcielago(mago, murcielagos); // nos vamos a la colision
+				}// Ademas de que el elemento murcielago sea null, el mago perderá vida
+			}
+			//-----------------Contador de murcielagos totales eliminados------------------------
+					cantMurcielagosEliminados += ColisionesMurcielagos;//Contador que definira si se termina la ronda/juego
+				}
+	public void actualizarMana() {
+		// Regeneramos el mana
+		regenerarMana ++; // Constantemente irá subiendo
+		if(regenerarMana >= 60) { // Hasta que se llegue a 60 ticks --> 1 segundo
+			if(this.mago.getMana() < 10) { // Si el mana del mago es menor a 10
+				this.mago.setMana(this.mago.getMana()+1); // Se aumenta el mana +1
+			}
+			regenerarMana = 0; // Si no es así, vuelve a 0 
+		}
+	}
+	Juego()
+	{	
 		// Inicializa el objeto entorno
 		this.entorno = new Entorno(this, "Proyecto para TP", anchoVentana, alturaVentana);
 		
@@ -292,262 +589,50 @@ public class Juego extends InterfaceJuego{
 		expirarHielo = 0;
 		
 		// Inicia el juego!
-		this.entorno.iniciar();	
+		this.entorno.iniciar();		
 	}
 
-	/**
-	 * Durante el juego, el método tick() será ejecutado en cada instante y 
-	 * por lo tanto es el método más importante de esta clase. Aquí se debe 
-	 * actualizar el estado interno del juego para simular el paso del tiempo 
-	 * (ver el enunciado del TP para mayor detalle).
-	 */
-	
-	public void tick() {			
-		
-		// Obtenemos los valores del punteroX y el PunteroY propios del mouse
-		punteroX = entorno.mouseX();
-		punteroY = entorno.mouseY();
-		
-		// Regeneramos el mana
-		regenerarMana ++; // Constantemente irá subiendo
-		if(regenerarMana >= 60) { // Hasta que se llegue a 60 ticks --> 1 segundo
-			if(this.mago.getMana() < 10) { // Si el mana del mago es menor a 10
-				this.mago.setMana(this.mago.getMana()+1); // Se aumenta el mana +1
-			}
-			regenerarMana = 0; // Si no es así, vuelve a 0 
-		}
-		
-//---------------Condicionales para controlar el juego-PAUSA-FIN DEL JUEGO(GANAR/PERDER)-RONDAS
-		if (mago.estaMuerto()) { //si el mago esta sin vida, mostramos pantalla fin de juego perdido
-		    dibujarEstadoJuego(false);
-		    PantallaFinJuegoPierde.dibujarImagenFinJuego(entorno);
+	// Metodo tick para cada instante del juego
+	public void tick()
+	{		    
+		//Funcion para aplicar pausa(Tecla ESPACIO)
+		if (manejarPausa()) {
 			return;
 		}
-		
-		if (this.entorno.sePresiono(entorno.TECLA_ESPACIO)) {//tecla escape para activar la pausa
-		    manejarPausa();
+		//Inicia el juego  con el contador de tiempo
+	    actualizarTiempo();
+		//Pantalla de cargas entre Rondas
+		if (manejarPantallasDeCarga()) {
+		    return; // se está mostrando la pantalla de ronda
 		}
-	
-		if (enPausa) {
-		    dibujarEstadoJuego(false);
-		    dibujarImagenPausa(entorno); //cartel de pausa (si no te gusta el cartel , lo cambio ;__;)
+		//Controla el si el jugador a Perdido el juego
+	    controlarFinDeJuego();
+	    if (mago.estaMuerto()) {
 		    return;
 		}
-		
-		if (this.entorno.sePresiono(entorno.TECLA_ENTER) && esperaEnter==true) {//tecla e
-		    esperaEnter();
-		}
-		
-		if (esperaEnter) {
-		    dibujarEstadoJuego(true);//el unico que tendra true en dibujarEstadoJuego para mostrar una imagen de espera de tecla o texto
-		    return;
-		}
-		
-		//manejamos el tiempo con el tick ya que el tiempó no es preciso(por lo que vi,, es por los bucles internos tambien)
-//		if (this.entorno.numeroDeTick() % 100 == 1) {//dividimos la cantiidad de ticks y cuanto el resto sea exactamente 1 aumenta el "tiempo"
-////			System.out.println("aaa");
-//			tiempo++;
-////			System.out.println(tiempo);
-//		}
-//		
-		
-		// Procesamiento de un instante de tiempo
-		// ...
-		
-		// Dibujamos el mapa en la primera capa 
-		this.entorno.dibujarImagen(imagenFondo, anchoVentana / 2 + 10, alturaVentana / 2, 0, 1.7);
+	    //Realizara el nuevo dibujo del mago al moverse
+		actualizarMovimientoMago();
+		//Funcion para actualizar el mana que utilizo el jugador
+		actualizarMana();
+		//Funcion para procesar el estado y contador de Murcielagos
+		procesarMurcielagos();
+		//Funcion para el manejo de entrada del click dek jugador
+	    manejarEntradas();
+	    //Funcion de dibujo de objetos estaticos Y dinamicos, como la la interfaz(UI) y los Hechizos 
+	    dibujarEscena();
+	    //Proocesamos la logica de los hechizos y su estado
+		procesarHechizos();
+		//Verificamos al final del tick si se cumplen las condiciones para finalizar la Ronda/Juego
+		verificarFinJuego();
 
-//---------------------------------------- MAGO -------------------------------------------
-		this.mago.dibujarImagenMago(entorno); // Dibujamos al mago
-		
-		//---------- Movimientos y colision con rocas --------------------
-		// Movimiento izquierdo
-		if(this.entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) {  // Si se presiona la tecla izquierda
-			if(mago.getX() - mago.getAncho() / 2 > 0 ) { // Si no supera el lado izquierdo de la pantalla del juego
-				this.mago.moverIzquierda(); // Se movera a la izquierda
-				if(this.mago.colisionaMagoRoca(rocas)) { // Si colisiona con una roca moviendose a la izquierda
-					this.mago.moverDerecha(); // Entonces que se mueva al lado contrario
-				}
-			}
-		}
-		
-		// Movimiento Derecho
-		if(this.entorno.estaPresionada(entorno.TECLA_DERECHA)) { // Si se presiona la tecla derecha
-			if(mago.getX() + mago.getAncho() / 2 < menu.getX() - menu.getAncho() / 2) { // Si no supera el lado derecho del menú
-				this.mago.moverDerecha(); // Se movera a la derecha
-				if(this.mago.colisionaMagoRoca(rocas)) { // Si colisiona con una roca moviendose a la derecha
-					this.mago.moverIzquierda(); // Entonces que se mueva al lado contrario
-				}
-			}
-		}
-		
-		// Movimiento Arriba
-		if(this.entorno.estaPresionada(entorno.TECLA_ARRIBA)) { // Si se presiona la tecla de arriba 
-			if(mago.getY() - mago.getAltura() / 2 > 0) { // Si no supera el lado de arriba de la pantalla del juego
-				this.mago.moverArriba(); // Se movera arriba
-				if(this.mago.colisionaMagoRoca(rocas)) { // Si colisiona con una roca moviendose para arriba
-					this.mago.moverAbajo(); // Entonces que se mueva al lado contrario
-				}
-			}
-		}
-		
-		// Movimiento Abajo
-		if(this.entorno.estaPresionada(entorno.TECLA_ABAJO)) { // Si se presiona la tecla de abajo 
-			if(mago.getY() + mago.getAltura() / 2 < 600 ) { // Si no supera el lado de abajo de la pantalla del juego
-				this.mago.moverAbajo(); // Se movera abajo
-				if(this.mago.colisionaMagoRoca(rocas)) { // Si colisiona con una roca moviendose para abajo
-					this.mago.moverArriba(); // Entonces que se mueva al lado contrario
-				}
-			}
-		}	
-		
-		//-----------------Colision entre Mago y Murciélago------------------------
-		// Esto va indicando si el murcielago colisiona con mago, si es así el murcielago se vuelve null
-		 int ColisionesMurcielagos = Funciones_utiles.colisionMagoMurcielago(mago, murcielagos);
-		
-		
-		
-//--------------------------------------------- MENU -------------------------------------------------
-		this.menu.dibujarImagenMenu(entorno); //Dibujamos el menú
-		
-//-------------------------------------------- ROCAS ------------------------------------------------
-		for (int i = 0; i < rocas.length;i++) { //Dibujamos a las Rocas
-			rocas[i].dibujarImagenRoca(entorno);
-			
-		}
-		
-//------------------------------------------ MURCIELAGO ----------------------------------------------	
-		// Persecusión Murcielago
-		for (int i = 0; i < murcielagos.length; i++) {
-			if(this.murcielagos[i] != null) { // Si el murcielago es diferente de null, lo persigue
-				Funciones_utiles.seguimientoMurcielago(mago, murcielagos[i]); // Actualiza posición del murcielago actual
-			    this.murcielagos[i].actualizarAnimacion(this.mago.getX()); // Actualizamos la animacion del murcielago
-	            this.murcielagos[i].dibujarImagen(entorno); // Dibujamos al Murcielago
-			}
-		}
-		
-		// Restablecer Murcielagos
-		cantMurcielagoGenerados = Funciones_utiles.actualizarMurcielagos(
-			    murcielagos, // Array de murcielagos 
-			    cantMurcielagoPantalla, // cantidad en pantalla 
-			    cantMurcielagoGenerados, // cantidad de generados
-			    cantMurcielagoTotal, // cantidad total
-			    anchoVentana, // ancho de ventana del juego
-			    alturaVentana, // alto de ventana del juego
-			    velocidadMurcielago,
-			    menu, // Y el propio menú
-			    numeroRonda//valor de nuestra ronda
-			);
-		
-//--------------------------------------------- HECHIZOS ---------------------------------------------
-		// Hechizo Fuego
-		if(this.botonHechizoFuego.estadoActual() == true) {
-			if(this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
-				if(Hechizos.permitirDisparar(punteroX, menu)) {
-					if(this.hechizoFuego == null) {
-						this.hechizoFuego = new Hechizos(this.mago.getX(),this.mago.getY(), punteroX,punteroY, 25,25, "Fuego", 0,1,true);
-						this.mago.setMana(this.mago.getMana() - this.hechizoFuego.getCostoMana());
-					}
-				}
-					
-			}
-			actualizarHechizo(1);
-			colisionaHechizoMurcielago(murcielagos,1);
-		}
-		
-		// Hechizo Hielo
-		if(this.botonHechizoHielo.estadoActual() == true) {
-			if(this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
-				if(Hechizos.permitirDisparar(punteroX, menu)) {
-					if(this.hechizoHielo == null && this.mago.getMana() > 5) {
-						this.hechizoHielo = new Hechizos(punteroX,punteroY, punteroX,punteroY, 200,200, "Hielo", 7,1,false);
-						this.mago.setMana(this.mago.getMana() - this.hechizoHielo.getCostoMana());
-						expirarHielo = 0;
-					}
-				}
-			}
-			actualizarHechizo(2);
-			colisionaHechizoMurcielago(murcielagos,2);
-		}
-		
-//----------------------------------------- PUNTERO Y HUD -------------------------------------------
-		if (this.botonHechizoFuego.estadoActual()) { // Puntero "Fuego"
-			imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero=1]); 
-		}
-		else if (this.botonHechizoHielo.estadoActual()) { // Puntero "Hielo"
-			tipopuntero=2;
-			imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero=2]); 
-		}
-		else { // Puntero normal
-			tipopuntero=0;
-			imagenPuntero = Herramientas.cargarImagen(punteroImagenes[tipopuntero=0]); 
-		}
-		
-		// Dibujamos el Puntero
-		this.dibujarImagenPuntero(entorno, this.entorno.mouseX(),this.entorno.mouseY());
-		// Dibujamos la vida del Mago
-		this.mago.dibujarVida(entorno, 5+this.menu.getX(), this.menu.getY()+86);
-		// Dibujamos el mana del Mago
-		this.mago.dibujarMana(entorno, 5+this.menu.getX(), this.menu.getY()+100);
-		// Dibujamos el Hud del Mago
-		this.dibujarImagenHudMago(entorno, 5+this.menu.getX(), this.menu.getY()+150);//dibujamos el hub del mago para mostrar la interfaz
-		// Escribimos en texto la Vida actual
-		entorno.escribirTexto("Vidas:" + this.mago.getVida(), this.menu.getX(),this.menu.getY()); 
-		// Escribimos en texto la ronda actual
-        entorno.escribirTexto("Ronda: " + this.numeroRonda, this.menu.getX(), this.menu.getY() + 20);
-
-//--------------------------------------- RONDA ---------------------------------------------------
-		
-		if (MurcielagosEliminados() && cantMurcielagoGenerados == cantMurcielagoTotal) {
-			if (numeroRonda==2) {//indicamos la ronda final
-				dibujarEstadoJuego(false);
-				PantallaFinJuegoGana.dibujarImagenFinJuego(entorno);
-			    return;
-			}
-			else {
-				rondaSiguiente(true); // Si no es la ronda final, aumenta la dificultad
-			}
-		}
-		cantMurcielagosEliminados += ColisionesMurcielagos;
-
-//---------------------------------------- BOTONES ------------------------------------------
-		// Boton para Hechizo Fuego
-		if(entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
-			if(this.botonHechizoFuego.estaDentro(punteroX, punteroY)) {
-				this.botonHechizoFuego.cambiarEstado();
-				if(this.botonHechizoHielo.estadoActual()) {
-					this.botonHechizoHielo.cambiarEstado();
-				}
-			}
-		}
-		
-		// Boton para Hechizo Hielo
-		if(entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {
-			if(this.botonHechizoHielo.estaDentro(punteroX, punteroY)) {
-				this.botonHechizoHielo.cambiarEstado();
-				if(this.botonHechizoFuego.estadoActual()) {
-						this.botonHechizoFuego.cambiarEstado();
-				}
-			}
-		}
-		
-		// Dibujar el boton del Hechizo Fuego
-		if(this.botonHechizoFuego.estadoActual()) {
-			this.botonHechizoFuego.dibujarnImagenBoton(entorno);
-		}else {
-			this.botonHechizoFuego.dibujarnImagenBoton(entorno);
-		}
-
-		// Dibujar el boton del Hechizo Hielo
-		if(this.botonHechizoHielo.estadoActual()) {
-			this.botonHechizoHielo.dibujarnImagenBoton(entorno);
-		}else {
-			this.botonHechizoHielo.dibujarnImagenBoton(entorno);
-		}	
 	}
 	
+	
+	
+
 	@SuppressWarnings("unused")
-	public static void main(String[] args){
+	public static void main(String[] args)
+	{
 		Juego juego = new Juego();
 	}
 }
