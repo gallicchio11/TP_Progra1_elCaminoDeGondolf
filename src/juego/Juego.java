@@ -9,13 +9,13 @@ import entorno.Herramientas;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego
-{	// El objeto Entorno que controla el tiempo y otros
-	
+{	
 	// Necesario del Juego
 	private int anchoVentana= 900;
 	private int alturaVentana= 600;
 	private Entorno entorno;
-
+	
+	private boolean inicioJuego = false;// Variable booleana para iniciar el juego
 	// Mago
 	private Mago mago;
 	
@@ -38,7 +38,8 @@ public class Juego extends InterfaceJuego
 	// Hud mago
 	private String hudMago = ("imagenes\\\\hud_mago.png");
 	private Image imagenMago = Herramientas.cargarImagen(hudMago); 	
-
+	// Cargamos la imagen de Inicio
+	private Image imagenInicio = Herramientas.cargarImagen("imagenes\\\\imagenInicio.png");
 	// Puntero	
 	private String [] punteroImagenes = {"imagenes\\\\puntero.png","imagenes\\\\puntero_fuego.png","imagenes\\\\puntero_hielo.png"};
 	private int tipopuntero = 2;
@@ -47,6 +48,19 @@ public class Juego extends InterfaceJuego
 	// Imagen de Mapa	
 	private Image imagenFondo = Herramientas.cargarImagen("imagenes\\\\mapa2.png");
 	
+	// Imagenes del Menu de seleccion de Dificultad-Fondo-Dificultad
+	private Image imagenDificultad = Herramientas.cargarImagen("imagenes\\\\selectorDificultad.png");
+	private Image imagenBtnFacil = Herramientas.cargarImagen("imagenes\\\\botonFacil.png");
+	private Image imagenBtnNormal= Herramientas.cargarImagen("imagenes\\\\botonNormal.png");
+	private Image ImagenBtnDificil = Herramientas.cargarImagen("imagenes\\\\botonDificil.png");
+
+	// Botones de dificultad
+	private Boton botonFacil;
+	private Boton botonNormal;
+	private Boton botonDificil;
+	private boolean seleccionDificultad = false;//Booleano para seleccionar una sola vez la dificultad
+	private int rondaFinal; // Ronda final definida por la dificultad
+
 	// Imagen para la pausa del juego
 	private Image imagenPausa = Herramientas.cargarImagen("imagenes\\\\pausa.png"); 
 	boolean enPausa = false; // Variable para el estado de la pausa
@@ -60,7 +74,6 @@ public class Juego extends InterfaceJuego
 	private Murcielago[] murcielagos = new Murcielago[cantMurcielagoTotal]; // Declaramos un array con 50 elementos
 	private int velocidadMurcielago = 2; // Velocidad de murcielagos
 	private int puntajeMurcielagos = 0;
- 
 	// Hechizos	
 	private Hechizos hechizoFuego ; // Declaramos Hechizo Fuego
 	private Hechizos hechizoHielo ; // Declaramos Hechizo Hielo
@@ -74,12 +87,14 @@ public class Juego extends InterfaceJuego
     private int tiempoInicio = -1;
     private boolean temporizadorEjecutado = false;
     private int tiempoFinal;
+	private boolean puntajesGuardados = false;
 	boolean salircarga1 = false;
 	boolean salircarga2 = false;
 	private Image imagenRonda1 = Herramientas.cargarImagen("imagenes\\\\ronda1.png"); ;
 	private Image imagenRonda2 = Herramientas.cargarImagen("imagenes\\\\ronda2.png"); ;
 	private int regenerarMana;
 	private int expirarHielo;
+	private int tiempoCarga = 2;//tiempo de espera para las pantallas de carga
 	
 	private int numeroRonda = 1;// Variable del numero de ronda
 
@@ -93,6 +108,14 @@ public class Juego extends InterfaceJuego
 	private Image imagenBotonFuegoDS = Herramientas.cargarImagen("imagenes\\boton_menu_hechizoA2.png");
 
 
+	//----------------Inicio-------------------------
+	public void dibujarinicio() {
+		entorno.dibujarImagen( imagenInicio, anchoVentana / 2 + 10, alturaVentana / 2, 0, 0.77);
+	}
+	//----------------Dificultad-------------------------
+	public void dibujarDificultad() {
+	    this.entorno.dibujarImagen(imagenDificultad, anchoVentana / 2 + 10, alturaVentana / 2, 0, 1.6);
+	}
 	//----------------Métodos propios para Hud del Mago-----------------------
 	public void dibujarImagenHudMago(Entorno entorno, int x, int y) {		
 		entorno.dibujarImagen(imagenMago,x, y, 0, 1);
@@ -109,7 +132,21 @@ public class Juego extends InterfaceJuego
 	public void esperaEnter() {
 		esperaEnter = !esperaEnter;// Lo utilizamos para que el jugador presione enter
 	}
-	
+
+//---------------------------Inicio de juego--------------------------
+
+	private boolean inicio() {
+		dibujarinicio();
+		if (!inicioJuego) {//si ya se inicio el juego anteriormente, no pedira volver a esta pantalla
+		    if (this.entorno.sePresiono(entorno.TECLA_ENTER) ) {//Presiona enter para iniciar
+		    	inicioJuego = !inicioJuego;
+				return inicioJuego;
+		    }
+			return inicioJuego;
+		}
+		return true;
+
+	}
 //	------------------------ Funcion de estado del Juego ------------------------------------(Se retiro parametro enter para texto)
 
 	public void dibujarEstadoJuego() {
@@ -235,6 +272,10 @@ public class Juego extends InterfaceJuego
 	        enPausa = !enPausa;
 	    }
 	    if (enPausa) {
+	        if (this.entorno.sePresiono(entorno.TECLA_ESCAPE)) {//Reutilizamos el reinicio para salir reiniciar desde el Menu
+	        	resetearValores();
+	        	System.out.println("reinicio");    
+	        }
 	        dibujarEstadoJuego();
 	        dibujarImagenPausa(entorno);
 		    return true;
@@ -242,8 +283,53 @@ public class Juego extends InterfaceJuego
 	    }
 	    return false;
 	}	
+	private void SalirJuego() {
+		if(this.entorno.estaPresionada(entorno.TECLA_ESCAPE)) { //Tecla Escape
+			entorno.dispose();
+		}
+	}
+  	public void resetearValores() {
+  		//reiniciamos las variables y objetos a sus valores por default
+	    this.numeroRonda = 1;
+	    this.enPausa = false;
+	    this.esperaEnter = true;
+	    this.tiempo = 0;
+	    this.tiempoInicio = -1;
+	    this.temporizadorEjecutado = false;
+	    this.tiempoFinal = 0;
+	    this.puntajesGuardados = false;
+	    this.salircarga1 = false;
+	    this.salircarga2 = false;
+	    this.cantMurcielagoPantalla = 10;
+	    this.cantMurcielagoTotal = 50;
+	    this.cantMurcielagoGenerados = 0;
+	    this.cantMurcielagosEliminados = 0;
+	    this.puntajeMurcielagos = 0;
+	    this.hechizoFuego = null;
+	    this.hechizoHielo = null;
+	    this.expirarHielo = 0;
+	    this.murcielagos = new Murcielago[this.cantMurcielagoTotal];
+
+	    //Restablecemos los apartados visuales del jugador
+		this.mago = new Mago(this.menu.getAncho(),alturaVentana); 
+		this.botonHechizoFuego = new Boton(790,150, 120, 67,imagenBotonHieloS, imagenBotonHieloDS); // Hechizo Fuego
+		this.botonHechizoHielo = new Boton (790,250, 120, 67,imagenBotonFuegoS, imagenBotonFuegoDS); // Hechizo Hielo
+		
+		//variables de Hechizo y Mana
+		regenerarMana = 0;
+		expirarHielo = 0;
+		this.entorno.iniciar();	// Inicia el juego
+
+	}
+    private void ReiniciarJuego() {
+        if (this.entorno.estaPresionada(entorno.TECLA_ENTER)) {//Si se presiona Enter en la pantalla final del juegop. Podra Reiniciarlo
+        	resetearValores();
+        	System.out.println("reinicio");    
+        }
+    }
+   
+	//------------------- Movimiento y Colision Mago-Rocas --------------------
 	private void actualizarMovimientoMago() {
-		//------------------- Movimiento y Colision Mago-Rocas --------------------
 				if(this.entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) { //Movimiento izquierdo
 					if(mago.getX() - mago.getAncho() / 2 > 0 ) {
 						this.mago.moverIzquierda();
@@ -342,12 +428,7 @@ public class Juego extends InterfaceJuego
         
     }
     //-----------------------Metodo para detener el tiempo interno del juego-----------------------------
-    public boolean pararTiempo() {
-		if (this.mago.estaMuerto()) {//si termina el juego, retornamos true para detener el tiempo para mostrarlo al jugador
-			return true;
-		}
-		return false;
-	}
+
     //-----------------------Metodo especifico para dibujar los hechizos-------------------------------------
     private void dibujarHechizos() {
         if (this.hechizoFuego != null) {
@@ -366,10 +447,10 @@ public class Juego extends InterfaceJuego
 		this.mago.dibujarMana(entorno, 5+this.menu.getX(), this.menu.getY()+100);// Dibujamos el manadel Mago
 		this.dibujarImagenHudMago(entorno, 5+this.menu.getX(), this.menu.getY()+150);// Dibujamos el Hud del Mago
 
-        entorno.cambiarFont("Arial", 22, Color.BLACK);// Le cambiamos la fuente por una mas estetica
+        entorno.cambiarFont("OCR A Extended", 22, Color.BLACK, entorno.NEGRITA);// Le cambiamos la fuente por una mas estetica
         entorno.escribirTexto("Ronda: " + this.numeroRonda, this.menu.getX()-40, this.menu.getY() + 20);//Mostramos la ronda actual en el Menu
         
-        entorno.cambiarFont("Arial", 18, Color.BLACK);// Le cambiamos la fuente por una mas estetica
+        entorno.cambiarFont("OCR A Extended", 18, Color.BLACK, entorno.NEGRITA);// Le cambiamos la fuente por una mas estetica
         entorno.escribirTexto("" + cantMurcielagosEliminados, this.menu.getX()+ 20, this.menu.getY() + 70);//Mostramos los murcielagos eliminados por pantallas de todas las rondas
 
      // Dibujar el boton del Hechizo Fuego
@@ -389,30 +470,10 @@ public class Juego extends InterfaceJuego
 	    dibujarImagenPuntero(entorno, entorno.mouseX(), entorno.mouseY());
 
 	}
-	//---------------Funcion para el control del juego-PAUSA-FIN DEL JUEGO(GANAR/PERDER)-RONDAS
-	private void controlarFinDeJuego() {
-		tiempoFinal=tiempo;
-		if (mago.estaMuerto()) { //si el mago esta sin vida, mostramos pantalla fin de juego perdido
-		    dibujarEstadoJuego();
-		    PantallaFinJuegoPierde.dibujarImagenFinJuego(entorno);
-	        entorno.cambiarFont("Arial", 38, Color.BLACK);// Le cambiamos la fuente por una mas estetica
-	        this.entorno.escribirTexto("" + tiempoFinal, this.PantallaFinJuegoGana.getX()+ 200, this.PantallaFinJuegoGana.getY() - 30);//Mostramos los murcielagos eliminados por pantallas de todas las rondas
-			return;
-		}
-		//--------------------------------------- RONDA ---------------------------------------------------
-	    if (MurcielagosEliminados() && cantMurcielagoGenerados == cantMurcielagoTotal) {
-			if (numeroRonda==2) {//indicamos la ronda final
-	            dibujarEstadoJuego();
-	            PantallaFinJuegoGana.dibujarImagenFinJuego(entorno);
-	        } else {
-				rondaSiguiente(true); // Si no es la ronda final, aumenta la dificultad
-	        }
-	    }
-	}
 	//------------------- Pantallas de Carga Entre Ronda y Ronda --------------------
 	private boolean manejarPantallasDeCarga() {
 	    if (numeroRonda == 1 && !salircarga1) {
-	        if (esperarTiempo(3, tiempo)) {// Tiempo de finalizacion de pantalla de carga
+	        if (esperarTiempo(tiempoCarga, tiempo)) {// Tiempo de finalizacion de pantalla de carga
 	            salircarga1 = true;
 	            reiniciar();
 	        } else {
@@ -423,7 +484,7 @@ public class Juego extends InterfaceJuego
 	    }
 
 	    if (numeroRonda == 2 && !salircarga2) {
-	        if (esperarTiempo(3, tiempo)) {
+	        if (esperarTiempo(tiempoCarga, tiempo)) {
 	            salircarga2 = true;
 	        } else {
 	        	dibujarEstadoJuego();
@@ -468,8 +529,8 @@ public class Juego extends InterfaceJuego
 	}
 	//----------------------------------------- TIEMPO DEL JUEGO -------------------------------------------
 	private void actualizarTiempo() {
-		//manejamos el tiempo con el tick ya que el tiempó no es preciso(por lo que vi,, es por los bucles internos tambien)
-		if(this.entorno.numeroDeTick() % 100 == 1 && !pararTiempo()) {// Dividimos la cantidad de ticks y cuanto el resto sea exactamente 1 aumenta el "tiempo"
+		//Manejamos el tiempo con el tick ya que el tiempó no es preciso(por lo que vi,, es por los bucles internos tambien)
+		if(this.entorno.numeroDeTick() % 100 == 1) {// Dividimos la cantidad de ticks y cuanto el resto sea exactamente 1 aumenta el "tiempo"
 			tiempo++;
 			System.out.println(tiempo);
 		}
@@ -507,20 +568,48 @@ public class Juego extends InterfaceJuego
 					dibujarHechizos();
 				
 	}
+	 //----------------------------------------- METODO PARA GUARDAR EL TIEMPO FINAL DEL JUEGO-------------------------------------------
+	private void guardarTiempoPuntaje() {
+		if (!puntajesGuardados) {	//Sin este condicional, sigue aumentando el tiempoFinal
+			tiempoFinal = tiempo; // Guardamos el tiempo para mostralo al final
+			puntajesGuardados = true;
+			puntajeMurcielagos += cantMurcielagosEliminados ;
+			System.out.println("Tiempo Guardado");
+		}
+	}
 	 //----------------------------------------- METODO PARA VERIFICAR QUE TERMINO EL JUEGO-------------------------------------------
 	private void verificarFinJuego() {
 		//-----------------Condicion para finalizar la Ronda/Juego------------------------
 		if (MurcielagosEliminados() && cantMurcielagoGenerados == cantMurcielagoTotal) 
-		{
-			if (numeroRonda==2) {//Indicamos la ronda final
-				puntajeMurcielagos += cantMurcielagosEliminados;
+		{	
+			if (numeroRonda==rondaFinal) {//Indicamos la ronda final
+				guardarTiempoPuntaje();//Guardamos el tiempo y la cantidad de murcielaghos eliminados total
 				dibujarEstadoJuego();
 				PantallaFinJuegoGana.dibujarImagenFinJuego(entorno);
+		        entorno.cambiarFont("Arial", 38, Color.BLACK, entorno.NEGRITA);// Le cambiamos la fuente por una mas estetica
+		        entorno.escribirTexto("" + tiempoFinal, this.PantallaFinJuegoGana.getX()+ 200, this.PantallaFinJuegoGana.getY() - 30);
+		        entorno.escribirTexto("" + puntajeMurcielagos, this.PantallaFinJuegoGana.getX()+ 200, this.PantallaFinJuegoGana.getY() + 15);
+		        SalirJuego();
+		        ReiniciarJuego();
 			    return;
 			}
 			else {
 				rondaSiguiente(true); // Si no es la ronda final, aumenta la dificultad
 			}	
+		}
+	}
+	//---------------Funcion para el control del juego-PAUSA-FIN DEL JUEGO(GANAR/PERDER)-RONDAS
+	private void controlarFinDeJuego() {
+		if (mago.estaMuerto()) { //si el mago esta sin vida, mostramos pantalla fin de juego perdido
+			guardarTiempoPuntaje();//Guardamos el tiempo y la cantidad de murcielaghos eliminados total
+		    dibujarEstadoJuego();
+		    PantallaFinJuegoPierde.dibujarImagenFinJuego(entorno);
+	        entorno.cambiarFont("Arial", 38, Color.BLACK, entorno.NEGRITA);// Le cambiamos la fuente por una mas estetica
+	        this.entorno.escribirTexto("" + tiempoFinal, this.PantallaFinJuegoPierde.getX()+ 200, this.PantallaFinJuegoPierde.getY() - 30);//Mostramos los murcielagos eliminados por pantallas de todas las rondas
+	        this.entorno.escribirTexto("" + puntajeMurcielagos, this.PantallaFinJuegoPierde.getX()+ 200, this.PantallaFinJuegoPierde.getY() + 25);
+	        SalirJuego();
+	        ReiniciarJuego();
+	        return;
 		}
 	}
 	 //-----------------------------------------PROCESA TODA LA LOGICA DE LOS MURCIELAGOS-------------------------------------------
@@ -551,6 +640,8 @@ public class Juego extends InterfaceJuego
 			//-----------------Contador de murcielagos totales eliminados------------------------
 					cantMurcielagosEliminados += ColisionesMurcielagos;//Contador que definira si se termina la ronda/juego
 				}
+	 //-----------------------------------------ACTUALIZA EL MANA DEL JUGADOR-------------------------------------------
+
 	public void actualizarMana() {
 		// Regeneramos el mana
 		regenerarMana ++; // Constantemente irá subiendo
@@ -561,13 +652,44 @@ public class Juego extends InterfaceJuego
 			regenerarMana = 0; // Si no es así, vuelve a 0 
 		}
 	}
+	//Metodo para  dibujar el selector de Dificultad con los botones
+	public void dibujarSelectorDificultad() {
+		dibujarDificultad();
+		this.botonFacil.dibujarnImagenDificultad(entorno, 1.5);
+	    this.botonNormal.dibujarnImagenDificultad(entorno, 1.5);
+	    this.botonDificil.dibujarnImagenDificultad(entorno, 1.5);
+	}
+	 //-----------------------------------------LOGICA DEL SELECTOR DE DIFICULTAD-------------------------------------------
+	public void manejarSelectorDificultad() {//Se seleciona una dificultad para definir la cantidad de rondas a jugar
+	    int mouseX = entorno.mouseX();
+	    int mouseY = entorno.mouseY();
+	    	//
+	    if (entorno.seLevantoBoton(entorno.BOTON_IZQUIERDO)) {//Condicional al levantar el Boton
+	        if (botonFacil.estaDentro(mouseX, mouseY)) {
+	        	rondaFinal = 1;
+	            seleccionDificultad = true;
+	            System.out.println("Dificultad Fácil");
+	        } else if (botonNormal.estaDentro(mouseX, mouseY)) {
+	            seleccionDificultad = true;
+	            rondaFinal = 2;
+	            System.out.println("Dificultad Normal");
+	       // } else if (botonDificil.estaDentro(mouseX, mouseY)) {//Modo Dificil "bloqueado"
+	            //     seleccionDificultad = true;
+	            //rondaFinal = 3;
+	            //System.out.println("Dificultad Difícil");
+	        }
+	    }
+	}
+
 	Juego()
 	{	
+		//instanciamos los botones de dificultad
+		this.botonFacil = new Boton(450, 250, 200, 50, imagenBtnFacil, imagenBtnFacil);
+		this.botonNormal = new Boton(450, 330, 200, 50, imagenBtnNormal, imagenBtnNormal);
+		this.botonDificil = new Boton(450, 410, 200, 50, ImagenBtnDificil, ImagenBtnDificil);       
 		// Inicializa el objeto entorno
 		this.entorno = new Entorno(this, "Proyecto para TP", anchoVentana, alturaVentana);
-		
-		// Inicializar lo que haga falta para el juego
-		
+				
 		// Inicializamos el menu
 		this.menu = new Menu(anchoVentana,alturaVentana); 
 		
@@ -579,8 +701,8 @@ public class Juego extends InterfaceJuego
 		this.PantallaFinJuegoPierde = new PantallaFinJuego(anchoVentana, alturaVentana, 2); // Pantalla Juego Pierde
 		
 		// Inicializamos los botones del Hechizo
-		this.botonHechizoFuego = new Boton(790,150,imagenBotonHieloS, imagenBotonHieloDS); // Hechizo Fuego
-		this.botonHechizoHielo = new Boton (790,250,imagenBotonFuegoS, imagenBotonFuegoDS); // Hechizo Hielo
+		this.botonHechizoFuego = new Boton(790,150, 120, 67, imagenBotonHieloS, imagenBotonHieloDS); // Hechizo Fuego
+		this.botonHechizoHielo = new Boton (790,250, 120, 67,imagenBotonFuegoS, imagenBotonFuegoDS); // Hechizo Hielo
 		
 		// Regenerar Mana
 		regenerarMana = 0;
@@ -588,13 +710,29 @@ public class Juego extends InterfaceJuego
 		// Expirar el Hechizo Hielo
 		expirarHielo = 0;
 		
+		
 		// Inicia el juego!
-		this.entorno.iniciar();		
+		this.entorno.iniciar();	
+		
+	
+		
 	}
 
 	// Metodo tick para cada instante del juego
 	public void tick()
-	{		    
+	{		   
+		// Funcion de inicio de juego para ejecutarse una sola vez(Solo muestra pantalla de inicio y espera ENTER)
+		if (!inicio()) {
+		    return;
+		}
+		// Funcion para seleccionar dificultad despues del inicio
+		if (!seleccionDificultad) {
+			dibujarSelectorDificultad();
+		    manejarSelectorDificultad();
+
+			System.out.println("select D");
+		    return;
+		}
 		//Funcion para aplicar pausa(Tecla ESPACIO)
 		if (manejarPausa()) {
 			return;
@@ -622,7 +760,7 @@ public class Juego extends InterfaceJuego
 	    dibujarEscena();
 	    //Proocesamos la logica de los hechizos y su estado
 		procesarHechizos();
-		//Verificamos al final del tick si se cumplen las condiciones para finalizar la Ronda/Juego
+		//Verificamos si se cumplen las condiciones para finalizar la Ronda/Juego
 		verificarFinJuego();
 
 	}
@@ -633,6 +771,7 @@ public class Juego extends InterfaceJuego
 	@SuppressWarnings("unused")
 	public static void main(String[] args)
 	{
-		Juego juego = new Juego();
+            Juego juego = new Juego();  
+            
 	}
 }

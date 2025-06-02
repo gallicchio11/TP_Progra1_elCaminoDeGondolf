@@ -14,11 +14,11 @@ public class Boton {
 	private Boolean seleccionado;
 
 	// Constructor
-	public Boton(int x, int y,Image imagenA,Image imagenB ) {
+	public Boton(int x, int y,int ancho, int altura, Image imagenA,Image imagenB ) {
 		this.x = x;
 		this.y = y;
-		this.ancho = 120;
-		this.altura = 67;
+		this.ancho = ancho;
+		this.altura = altura;
 		this.seleccionado = false;
 		this.imagenS = imagenA;
 		this.imagenDS = imagenB;
@@ -39,7 +39,9 @@ public class Boton {
 	public void cambiarEstado() {
 	    this.seleccionado = !this.seleccionado;
 	}
-
+	public void dibujarnImagenDificultad(Entorno entorno, double escala) {
+			entorno.dibujarImagen(this.imagenDS, this.x, this.y, 0, escala);
+	}
 //-------------------- DIBUJAR IMAGEN DEL BOTÓN -----------------------------
 	public void dibujarnImagenBoton(Entorno entorno) {
 		if(this.estadoActual()){
