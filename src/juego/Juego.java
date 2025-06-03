@@ -72,7 +72,7 @@ public class Juego extends InterfaceJuego
 	private int cantMurcielagoGenerados = 0;
 	public int cantMurcielagosEliminados = 0; // Cantidad de murcielagos eliminados
 	private Murcielago[] murcielagos = new Murcielago[cantMurcielagoTotal]; // Declaramos un array con 50 elementos
-	private int velocidadMurcielago = 2; // Velocidad de murcielagos
+	private int velocidadMurcielago = 10; // Velocidad de murcielagos
 	private int puntajeMurcielagos = 0;
 	// Hechizos	
 	private Hechizos hechizoFuego ; // Declaramos Hechizo Fuego
@@ -376,7 +376,7 @@ public class Juego extends InterfaceJuego
 	        if (this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
 	            if (Hechizos.permitirDisparar(punteroX, menu)) {
 	                if (this.hechizoFuego == null) {
-	                    this.hechizoFuego = new Hechizos(mago.getX(), mago.getY(), punteroX, punteroY, 25, 25, "Fuego", 1, 1, true);
+	                    this.hechizoFuego = new Hechizos(mago.getX(), mago.getY(), punteroX, punteroY, 25, 25, "Fuego", 0, 1, true);
 	                    this.mago.setMana(mago.getMana() - this.hechizoFuego.getCostoMana());
 	                }
 	            }
@@ -388,7 +388,7 @@ public class Juego extends InterfaceJuego
 	        if (this.entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
 	            if (Hechizos.permitirDisparar(punteroX, menu)) {
 	                if (this.hechizoHielo == null && this.mago.getMana() > 5) {
-	                    this.hechizoHielo = new Hechizos(punteroX, punteroY, punteroX, punteroY, 200, 200, "Hielo", 7, 1, false);
+	                    this.hechizoHielo = new Hechizos(punteroX, punteroY, punteroX, punteroY, 200, 200, "Hielo", 8, 1, false);
 	                    this.mago.setMana(mago.getMana() - hechizoHielo.getCostoMana());
 	                    expirarHielo = 0;
 	                }
@@ -632,12 +632,12 @@ public class Juego extends InterfaceJuego
 				);	
 
 			//-----------------Colision entre Mago y Murciélago = Perder vida------------------------
-			for(int i = 0; i < murcielagos.length;i++) { // recorremos los murcielagos
-				if(this.murcielagos[i] != null) { //  Preguntamos si son distintos de null
-					Funciones_utiles.colisionMagoMurcielago(mago, murcielagos); // nos vamos a la colision
-				}// Ademas de que el elemento murcielago sea null, el mago perderá vida
-			}
-			//-----------------Contador de murcielagos totales eliminados------------------------
+//			for(int i = 0; i < murcielagos.length;i++) { // recorremos los murcielagos
+//				if(this.murcielagos[i] != null) { //  Preguntamos si son distintos de null
+//					Funciones_utiles.colisionMagoMurcielago(mago, murcielagos); // nos vamos a la colision
+//				}// Ademas de que el elemento murcielago sea null, el mago perderá vida
+//			}
+//			//-----------------Contador de murcielagos totales eliminados------------------------
 					cantMurcielagosEliminados += ColisionesMurcielagos;//Contador que definira si se termina la ronda/juego
 				}
 	 //-----------------------------------------ACTUALIZA EL MANA DEL JUGADOR-------------------------------------------
@@ -688,7 +688,7 @@ public class Juego extends InterfaceJuego
 		this.botonNormal = new Boton(450, 330, 200, 50, imagenBtnNormal, imagenBtnNormal);
 		this.botonDificil = new Boton(450, 410, 200, 50, ImagenBtnDificil, ImagenBtnDificil);       
 		// Inicializa el objeto entorno
-		this.entorno = new Entorno(this, "Proyecto para TP", anchoVentana, alturaVentana);
+		this.entorno = new Entorno(this, "ulisesRodriguez-agustinGallichio-tp-p1", anchoVentana, alturaVentana);
 				
 		// Inicializamos el menu
 		this.menu = new Menu(anchoVentana,alturaVentana); 
@@ -712,10 +712,7 @@ public class Juego extends InterfaceJuego
 		
 		
 		// Inicia el juego!
-		this.entorno.iniciar();	
-		
-	
-		
+		this.entorno.iniciar();		
 	}
 
 	// Metodo tick para cada instante del juego
@@ -764,9 +761,6 @@ public class Juego extends InterfaceJuego
 		verificarFinJuego();
 
 	}
-	
-	
-	
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args)

@@ -94,7 +94,7 @@ public class Funciones_utiles {
 	    int cantMurcielagoTotal,
 	    int anchoVentana,
 	    int alturaVentana,
-	    int velocidad,
+	   
 	    String [] framesDerecha, // ahora al generar murcielagos es encesario agregar los sprites correspoondientes
 	    String [] framesIzquierda,
 	    Menu menu) {
@@ -106,27 +106,22 @@ public class Funciones_utiles {
 	    int borde = random.nextInt(4);
 	    int x = 0;
 	    int y = 0;
-	    String direccion = "";
 
 	    if (borde == 0) { // Lado izquierdo
 	        x = 0;
 	        y = random.nextInt(alturaVentana);
-	        direccion = "izquierda";
 	    } else if (borde == 1) { // Lado derecho
 	        x = anchoVentana - menu.getAncho();
 	        y = random.nextInt(alturaVentana);
-	        direccion = "derecha";
 	    } else if (borde == 2) { // Lado superior
 	        x = random.nextInt(anchoVentana - menu.getAncho());
 	        y = 0;
-	        direccion = "arriba";
 	    } else { // Lado inferior
 	        x = random.nextInt(anchoVentana - menu.getAncho());
 	        y = alturaVentana;
-	        direccion = "abajo";
 	    }
 	    // Los nuevos murcielagos recibiran el sprite correspondiente a la ronda
-	    murcielagos[k] = new Murcielago(x, y, direccion,velocidad, framesDerecha, framesIzquierda);
+	    murcielagos[k] = new Murcielago(x, y, framesDerecha, framesIzquierda);
 	    return cantMurcielagoGenerados + 1; // Incremento la cantidad generada
 	}
 
@@ -162,7 +157,7 @@ public class Funciones_utiles {
 			if (murcielagos[i] == null && faltan > 0 && cantMurcielagoGenerados < cantMurcielagoTotal) {
 				cantMurcielagoGenerados = Funciones_utiles.generarMurcielago(
 				i, murcielagos, cantMurcielagoGenerados, cantMurcielagoTotal,
-		        anchoVentana, alturaVentana, velocidad,framesDerecha, framesIzquierda, menu);
+		        anchoVentana, alturaVentana, framesDerecha, framesIzquierda, menu);
 					faltan--;
 		            vivosActuales++;
 		    }

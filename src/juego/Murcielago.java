@@ -21,7 +21,7 @@ public class Murcielago {
 	private String[] movimientoIzquierdaMurcielago;
 	
 	// Constructor
-	public Murcielago(int x, int y, String direccion, int velocidad,  String[] framesDerecha, String[] framesIzquierda) {
+	public Murcielago(int x, int y,  String[] framesDerecha, String[] framesIzquierda) {
 		this.x = x;
 		this.y = y;
 		this.ancho = 20;
