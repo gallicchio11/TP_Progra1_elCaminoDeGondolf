@@ -72,7 +72,7 @@ public class Juego extends InterfaceJuego
 	private int cantMurcielagoGenerados = 0;
 	public int cantMurcielagosEliminados = 0; // Cantidad de murcielagos eliminados
 	private Murcielago[] murcielagos = new Murcielago[cantMurcielagoTotal]; // Declaramos un array con 50 elementos
-	private int velocidadMurcielago = 10; // Velocidad de murcielagos
+	private int velocidadMurcielago = 2; // Velocidad de murcielagos
 	private int puntajeMurcielagos = 0;
 	// Hechizos	
 	private Hechizos hechizoFuego ; // Declaramos Hechizo Fuego
@@ -632,11 +632,11 @@ public class Juego extends InterfaceJuego
 				);	
 
 			//-----------------Colision entre Mago y Murciélago = Perder vida------------------------
-//			for(int i = 0; i < murcielagos.length;i++) { // recorremos los murcielagos
-//				if(this.murcielagos[i] != null) { //  Preguntamos si son distintos de null
-//					Funciones_utiles.colisionMagoMurcielago(mago, murcielagos); // nos vamos a la colision
-//				}// Ademas de que el elemento murcielago sea null, el mago perderá vida
-//			}
+			for(int i = 0; i < murcielagos.length;i++) { // recorremos los murcielagos
+				if(this.murcielagos[i] != null) { //  Preguntamos si son distintos de null
+					Funciones_utiles.colisionMagoMurcielago(mago, murcielagos); // nos vamos a la colision
+				}// Ademas de que el elemento murcielago sea null, el mago perderá vida
+			}
 //			//-----------------Contador de murcielagos totales eliminados------------------------
 					cantMurcielagosEliminados += ColisionesMurcielagos;//Contador que definira si se termina la ronda/juego
 				}
